@@ -1,8 +1,8 @@
 ## Interface: 90002
-## Title: n Keys
+## Title: nKeys
 ## Notes: Keystone Manager for Guilds and Friends
 ## Author: Phrike
-## Version: 1
+## Version: 2
 ## SavedVariables: nKeys, nCharacters, nKeysSettings, nMinimap, nAffixes, nLists, nUnits
 
 Init.lua
