@@ -2,7 +2,7 @@
 ## Title: n Keys
 ## Notes: Keystone Manager for Guilds and Friends
 ## Author: Phrike
-## Version: 3.35
+## Version: 1
 ## SavedVariables: nKeys, nCharacters, nKeysSettings, nMinimap, nAffixes, nLists, nUnits
 
 Init.lua
