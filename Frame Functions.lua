@@ -28,13 +28,13 @@ function e.CreateCheckBox(parent, label, width)
 	local tex = checkbox:CreateTexture('PUSHED_TEXTURE_BOX', 'BACKGROUND')
 	tex:SetSize(12, 12)
 	tex:SetPoint('LEFT', checkbox, 'LEFT', -2, 0)
-	tex:SetTexture('Interface\\AddOns\\AstralKeys\\Media\\box2.tga')
+	tex:SetTexture('Interface\\AddOns\\nKeys\\Media\\box2.tga')
 	tex:SetVertexColor(0.3, 0.3, 0.3)
 
 	checkbox.t = checkbox:CreateTexture('PUSHEDTEXTURE', 'BACKGROUND')
 	checkbox.t:SetSize(12, 12)
 	checkbox.t:SetPoint('CENTER', tex, 'CENTER', 0, 0)
-	checkbox.t:SetTexture('Interface\\AddOns\\AstralKeys\\Media\\Texture\\baseline-done-small@2x.tga')
+	checkbox.t:SetTexture('Interface\\AddOns\\nKeys\\Media\\Texture\\baseline-done-small@2x.tga')
 	checkbox:SetCheckedTexture(checkbox.t)
 
 	if label then
@@ -75,7 +75,7 @@ local function CreateButton(parent)
 
 		button.menuTexture = button:CreateTexture(nil, 'ARTWORK')
 		button.menuTexture:SetSize(16, 16)
-		button.menuTexture:SetTexture('Interface\\AddOns\\AstralKeys\\Media\\Texture\\baseline_keyboard_arrow_right_white_24dp')
+		button.menuTexture:SetTexture('Interface\\AddOns\\nKeys\\Media\\Texture\\baseline_keyboard_arrow_right_white_24dp')
 		button.menuTexture:SetVertexColor(0.8, 0.8, 0.8, 0.8)
 		button.menuTexture:SetPoint('RIGHT', button, 'RIGHT', -5, 0)
 
@@ -112,7 +112,7 @@ end
 
 
 function e.CreateDropDownFrame(name, level, parent)
-	local frame = CreateFrame('FRAME', 'AstralMenuFrame' .. name .. level, parent, "BackdropTemplate")
+	local frame = CreateFrame('FRAME', 'nMenuFrame' .. name .. level, parent, "BackdropTemplate")
 	frame:Hide()
 	frame.tier = level
 	frame.buttons = {}

@@ -5,8 +5,8 @@ local BNSendGameData, SendAddonMessage, SendChatMessage = BNSendGameData, C_Chat
 
 -- Variables for syncing information
 -- Will only accept information from other clients with same version settings
-local SYNC_VERSION = 'sync5'
-e.UPDATE_VERSION = 'updateV8'
+local SYNC_VERSION = 'sync1'
+e.UPDATE_VERSION = 'updateV1'
 
 local versionList = {}
 local highestSubVersion, highestMajorVersion = 0, 0
@@ -29,9 +29,9 @@ SEND_INTERVAL[3] = 2 -- Used for version checks
 -- Changes when player enters a raid instance or not
 local SEND_INTERVAL_SETTING = 1 -- What intervel to use for sending key information
 
-AstralComs = CreateFrame('FRAME', 'AstralComs')
+nComs = CreateFrame('FRAME', 'nComs')
 
-function AstralComs:RegisterPrefix(channel, prefix, f)
+function nComs:RegisterPrefix(channel, prefix, f)
 	local channel = channel or 'GUILD' -- Defaults to guild channel
 
 	if self:IsPrefixRegistered(channel, prefix) then return end -- Did we register something to the same channel with the same name?
@@ -45,7 +45,7 @@ function AstralComs:RegisterPrefix(channel, prefix, f)
 	table.insert(self.dtbl[channel], obj)
 end
 
-function AstralComs:UnregisterPrefix(channel, prefix)
+function nComs:UnregisterPrefix(channel, prefix)
 	local objs = self.dtbl[channel]
 	if not objs then return end
 	for id, obj in pairs(objs) do
@@ -56,7 +56,7 @@ function AstralComs:UnregisterPrefix(channel, prefix)
 	end
 end
 
-function AstralComs:IsPrefixRegistered(channel, prefix)
+function nComs:IsPrefixRegistered(channel, prefix)
 	local objs = self.dtbl[channel]
 	if not objs then return false end
 	for _, obj in pairs(objs) do
@@ -67,12 +67,12 @@ function AstralComs:IsPrefixRegistered(channel, prefix)
 	return false
 end
 
-function AstralComs:OnEvent(event, prefix, msg, channel, sender)
-	if not (prefix == 'AstralKeys') then return end
+function nComs:OnEvent(event, prefix, msg, channel, sender)
+	if not (prefix == 'nKeys') then return end
 
 	if event == 'BN_CHAT_MSG_ADDON' then channel = 'BNET' end -- To handle BNET addon messages, they are actually WHISPER but I like to keep them seperate
 
-	local objs = AstralComs.dtbl[channel]
+	local objs = nComs.dtbl[channel]
 	if not objs then return end
 
 	local arg, content = msg:match("^(%S*)%s*(.-)$")
@@ -101,7 +101,7 @@ local function delMsg(msg)
 end
 
 
-function AstralComs:NewMessage(prefix, text, channel, target)
+function nComs:NewMessage(prefix, text, channel, target)
 	if channel == 'GUILD' then
 		if not IsInGuild() then
 			return
@@ -131,7 +131,7 @@ function AstralComs:NewMessage(prefix, text, channel, target)
 	end
 end
 
-function AstralComs:SendMessage()
+function nComs:SendMessage()
 	local msg = table.remove(self.queue, 1)
 	if msg[3] == 'BNET' then
 		if select(3, BNGetGameAccountInfo(msg[4])) == 'WoW' and BNConnected() then -- Are they logged into WoW and are we connected to BNET?
@@ -147,7 +147,7 @@ function AstralComs:SendMessage()
 	end
 end
 
-function AstralComs:OnUpdate(elapsed)
+function nComs:OnUpdate(elapsed)
 	self.delay = self.delay + elapsed
 
 	if self.delay < SEND_INTERVAL[SEND_INTERVAL_SETTING] + self.loadDelay then
@@ -172,7 +172,7 @@ function AstralComs:OnUpdate(elapsed)
 	self:SendMessage()
 end
 
-function AstralComs:Init()
+function nComs:Init()
 	self:RegisterEvent('CHAT_MSG_ADDON')
 	self:RegisterEvent('BN_CHAT_MSG_ADDON')
 
@@ -187,14 +187,14 @@ function AstralComs:Init()
 	self.loadDelay = 0
 	self.versionPrint = false
 end
-AstralComs:Init()
+nComs:Init()
 
 -- Version checking
 
 local function VersionRequest()
-	SendAddonMessage('AstralKeys', 'versionPush ' .. e.CLIENT_VERSION .. ':' .. e.PlayerClass(), 'GUILD') -- Bypass the queue, shouldn't cause any issues, very little data is being pushed
+	SendAddonMessage('nKeys', 'versionPush ' .. e.CLIENT_VERSION .. ':' .. e.PlayerClass(), 'GUILD') -- Bypass the queue, shouldn't cause any issues, very little data is being pushed
 end
-AstralComs:RegisterPrefix('GUILD', 'versionRequest', VersionRequest)
+nComs:RegisterPrefix('GUILD', 'versionRequest', VersionRequest)
 
 local function VersionPush(msg, sender)
 	local majorVersion, subVersion, class = msg:match('(%d+).(%d+):(%a+)')
@@ -206,7 +206,7 @@ local function VersionPush(msg, sender)
 	end
 	versionList[sender] = {subVersion = tonumber(subVersion), majorVersion = tonumber(majorVersion), class = class}
 end
-AstralComs:RegisterPrefix('GUILD', 'versionPush', VersionPush)
+nComs:RegisterPrefix('GUILD', 'versionPush', VersionPush)
 
 PrintVersion = function()
 	local outOfDate = 'Out of date: '
@@ -240,27 +240,27 @@ function e.CheckGuildVersion()
 
 	highestVersion = 0
 	wipe(versionList)
-	SendAddonMessage('AstralKeys', 'versionRequest', 'GUILD') -- Bypass the queue, very little data is being pushed, shouldn't cause any issues.
-	AstralComs.versionPrint = true
+	SendAddonMessage('nKeys', 'versionRequest', 'GUILD') -- Bypass the queue, very little data is being pushed, shouldn't cause any issues.
+	nComs.versionPrint = true
 	SEND_INTERVAL_SETTING = 3
-	AstralComs.delay = 0
-	AstralComs:Show()
+	nComs.delay = 0
+	nComs:Show()
 end
 
 -- Testing
 local function GuildVersionCheckOnLogin()
-	AstralComs:NewMessage('AstralKeys', 'versionCheck ' .. e.CLIENT_VERSION, 'GUILD')
+	nComs:NewMessage('nKeys', 'versionCheck ' .. e.CLIENT_VERSION, 'GUILD')
 end
---AstralEvents:Register('PLAYER_LOGIN', GuildVersionCheckOnLogin, 'versionCheck_login_guild')
+--nEvents:Register('PLAYER_LOGIN', GuildVersionCheckOnLogin, 'versionCheck_login_guild')
 
 local function GroupVersionCheckOnJoin()
 	if IsInRaid() then
-		AstralComs:NewMessage('AstralKeys', 'versionCheck ' .. e.CLIENT_VERSION, 'RAID')
+		nComs:NewMessage('nKeys', 'versionCheck ' .. e.CLIENT_VERSION, 'RAID')
 	elseif (IsInGroup() and not IsInGroup(LE_PARTY_CATEGORY_INSTANCE) == 'INSTANCE_CHAT') then
-		AstralComs:NewMessage('AstralKeys', 'versionCheck ' .. e.CLIENT_VERSION, 'PARTY')
+		nComs:NewMessage('nKeys', 'versionCheck ' .. e.CLIENT_VERSION, 'PARTY')
 	end
 end
---AstralEvents:Register('GROUP_ROSTER_UPDATE', GroupVersionCheckOnJoin, 'versionCheck_login_group')
+--nEvents:Register('GROUP_ROSTER_UPDATE', GroupVersionCheckOnJoin, 'versionCheck_login_group')
 
 local receivedVersionMessage = false
 local function VersionCheck(version, sender)
@@ -279,27 +279,27 @@ local function VersionCheck(version, sender)
 			messageChannel = 'GUILD'
 		end
 		if messageChannel then
-			--AstralComs:NewMessage('AstralKeys', 'versionCheck ' .. e.CLIENT_VERSION, messageChannel)
+			--nComs:NewMessage('nKeys', 'versionCheck ' .. e.CLIENT_VERSION, messageChannel)
 		end
 	end
 end
---AstralComs:RegisterPrefix('GUILD', 'versionCheck', VersionCheck)
+--nComs:RegisterPrefix('GUILD', 'versionCheck', VersionCheck)
 
 -- Let's just disable sending information if we are doing a boss fight
 -- but keep updating individual keys if we receive them
 -- keep the addon channel overhead low
-AstralEvents:Register('ENCOUNTER_START', function()
-	AstralComs:UnregisterPrefix('GUILD', 'request')
+nEvents:Register('ENCOUNTER_START', function()
+	nComs:UnregisterPrefix('GUILD', 'request')
 	end, 'encStart')
 
-AstralEvents:Register('ENCOUNTER_END', function()
-	AstralComs:RegisterPrefix('GUID', 'request', PushKeyList)
+nEvents:Register('ENCOUNTER_END', function()
+	nComs:RegisterPrefix('GUID', 'request', PushKeyList)
 	end, 'encStop')
 
 -- Checks to see if we zone into a raid instance,
 -- Let's increase the send interval if we are raiding, client sync can wait, dc's can't
 CheckInstanceType = function()
-	AstralComs.loadDelay = 3
+	nComs.loadDelay = 3
 	local inInstance, instanceType = IsInInstance()
 	if inInstance and instanceType == 'raid' then
 		SEND_INTERVAL_SETTING = 2
@@ -307,10 +307,10 @@ CheckInstanceType = function()
 		SEND_INTERVAL_SETTING = 1
 	end
 end
-AstralEvents:Register('PLAYER_ENTERING_WORLD', CheckInstanceType, 'entering_world')
+nEvents:Register('PLAYER_ENTERING_WORLD', CheckInstanceType, 'entering_world')
 
 function e.AnnounceCharacterKeys(channel)
-	for i = 1, #AstralCharacters do
+	for i = 1, #nCharacters do
 		local id = e.UnitID(strformat('%s-%s', e.CharacterName(i), e.CharacterRealm(i)))
 
 		if id then
@@ -322,10 +322,10 @@ function e.AnnounceCharacterKeys(channel)
 end
 
 function e.AnnounceNewKey(keyLink)
-	if AstralKeysSettings.general.announce_party.isEnabled and IsInGroup() then
+	if nKeysSettings.general.announce_party.isEnabled and IsInGroup() then
 		SendChatMessage(strformat(L['ANNOUNCE_NEW_KEY'], keyLink), 'PARTY')
 	end
-	if AstralKeysSettings.general.announce_guild.isEnabled and IsInGuild() then
+	if nKeysSettings.general.announce_guild.isEnabled and IsInGuild() then
 		SendChatMessage(strformat(L['ANNOUNCE_NEW_KEY'], keyLink), 'GUILD')
 	end
 end
@@ -334,46 +334,46 @@ local function ParseGuildChatCommands(text)
 	if UnitLevel('player') ~= e.EXPANSION_LEVEL then return end -- Don't bother checking anything if the unit is unable to acquire a key
 	if text == '!keys' then
 		local guild = GetGuildInfo('player')
-		if AstralKeysSettings.general.report_on_message['guild'] or (guild == 'Astral' and e.PlayerRealm() == 'Turalyon') then -- Guild leader for Astral desires this setting to be foreced on for members.
+		if nKeysSettings.general.report_on_message['guild'] or (guild == 'n' and e.PlayerRealm() == 'Turalyon') then -- Guild leader for n desires this setting to be foreced on for members.
 			local unitID = e.UnitID(e.Player())
 			if unitID then
 				local keyLink = e.CreateKeyLink(e.UnitMapID(unitID), e.UnitKeyLevel(unitID))
 				if not keyLink then return end -- Something went wrong
-				SendChatMessage(string.format('Astral Keys: %s', keyLink), 'GUILD')
+				SendChatMessage(string.format('n Keys: %s', keyLink), 'GUILD')
 			else
-				if AstralKeysSettings.general.report_on_message.no_key then
-					SendChatMessage(strformat('%s: %s', 'Astral Keys', L['NO_KEY']), 'GUILD')
+				if nKeysSettings.general.report_on_message.no_key then
+					SendChatMessage(strformat('%s: %s', 'n Keys', L['NO_KEY']), 'GUILD')
 				end
 			end
 		end
 	end
 end
-AstralEvents:Register('CHAT_MSG_GUILD', ParseGuildChatCommands, 'parseguildchat')
+nEvents:Register('CHAT_MSG_GUILD', ParseGuildChatCommands, 'parseguildchat')
 
 local function ParsePartyChatCommands(text)
 	if UnitLevel('player') ~= e.EXPANSION_LEVEL then return end -- Don't bother checking anything if the unit is unable to acquire a key
 	if text == '!keys' then
-		if AstralKeysSettings.general.report_on_message['party'] then
+		if nKeysSettings.general.report_on_message['party'] then
 			local unitID = e.UnitID(e.Player())
 			if unitID then
 				local keyLink = e.CreateKeyLink(e.UnitMapID(unitID), e.UnitKeyLevel(unitID))
 				if not keyLink then return end -- Something went wrong
-				SendChatMessage(string.format('Astral Keys: %s', keyLink), 'PARTY')
+				SendChatMessage(string.format('n Keys: %s', keyLink), 'PARTY')
 			else
-				if AstralKeysSettings.general.report_on_message.no_key then
-					SendChatMessage(strformat('%s: %s', 'Astral Keys', L['NO_KEY']), 'PARTY')
+				if nKeysSettings.general.report_on_message.no_key then
+					SendChatMessage(strformat('%s: %s', 'n Keys', L['NO_KEY']), 'PARTY')
 				end
 			end
 		end
 	end
 end
-AstralEvents:Register('CHAT_MSG_PARTY', ParsePartyChatCommands, 'parsepartychat')
-AstralEvents:Register('CHAT_MSG_PARTY_LEADER', ParsePartyChatCommands, 'parsepartychat')
+nEvents:Register('CHAT_MSG_PARTY', ParsePartyChatCommands, 'parsepartychat')
+nEvents:Register('CHAT_MSG_PARTY_LEADER', ParsePartyChatCommands, 'parsepartychat')
 
 local function ParseRaidChatCommands(text)
 	if UnitLevel('player') ~= e.EXPANSION_LEVEL then return end -- Don't bother checking anything if the unit is unable to acquire a key
 	if text == '!keys' then
-		if AstralKeysSettings.general.report_on_message['raid'] then
+		if nKeysSettings.general.report_on_message['raid'] then
 			local unitID = e.UnitID(e.Player())
 			if unitID then
 				local link
@@ -387,14 +387,14 @@ local function ParseRaidChatCommands(text)
 					end
 				end
 				if not link then return end -- something went wrong
-				SendChatMessage(string.format('Astral Keys: %s', link), 'RAID')	
+				SendChatMessage(string.format('n Keys: %s', link), 'RAID')	
 			else
-				if AstralKeysSettings.general.report_on_message.no_key then
-					SendChatMessage(strformat('%s: %s', 'Astral Keys', L['NO_KEY']), 'RAID')
+				if nKeysSettings.general.report_on_message.no_key then
+					SendChatMessage(strformat('%s: %s', 'n Keys', L['NO_KEY']), 'RAID')
 				end
 			end
 		end
 	end
 end
-AstralEvents:Register('CHAT_MSG_RAID', ParseRaidChatCommands, 'parseraidchat')
-AstralEvents:Register('CHAT_MSG_RAID_LEADER', ParseRaidChatCommands, 'parseraidchat')
+nEvents:Register('CHAT_MSG_RAID', ParseRaidChatCommands, 'parseraidchat')
+nEvents:Register('CHAT_MSG_RAID_LEADER', ParseRaidChatCommands, 'parseraidchat')

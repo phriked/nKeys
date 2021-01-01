@@ -10,21 +10,21 @@ end
 
 function e.UpdateCharacterIDs() 
 	wipe(characterList)
-	for i = 1, #AstralCharacters do
-		characterList[AstralCharacters[i].unit] = i
+	for i = 1, #nCharacters do
+		characterList[nCharacters[i].unit] = i
 	end
 end
 
 -- Retrieves character's realm
 -- @return string Realm name for character
 function e.CharacterRealm(id)
-	return AstralCharacters[id].unit:sub(AstralCharacters[id].unit:find('-') + 1)
+	return nCharacters[id].unit:sub(nCharacters[id].unit:find('-') + 1)
 end
 
 -- Retrieves character's name
 -- @return string Character's name
 function e.CharacterName(id)
-	return AstralCharacters[id].unit:sub(1, AstralCharacters[id].unit:find('-') - 1)
+	return nCharacters[id].unit:sub(1, nCharacters[id].unit:find('-') - 1)
 end
 
 -- Retrieves character ID
@@ -38,7 +38,7 @@ end
 -- id int ID for character
 -- @return string Non-localized class name, used for text colouring
 function e.GetCharacterClass(id)
-	return AstralCharacters[id].class
+	return nCharacters[id].class
 end
 
 -- Retrieves character's highest run Mythic+
@@ -46,8 +46,8 @@ end
 -- @return int Highest mythic+ ran for the week
 -- @return int 0 implies no key run for the week
 function e.GetCharacterBestLevel(id)
-	if AstralCharacters[id] and AstralCharacters[id].weekly_best then
-		return AstralCharacters[id].weekly_best
+	if nCharacters[id] and nCharacters[id].weekly_best then
+		return nCharacters[id].weekly_best
 	else
 		return nil
 	end
@@ -58,8 +58,8 @@ end
 -- @return int mapID for the highest ran mythic+ for the week
 -- @return int 0 implies no key run for the week
 function e.GetCharacterBestMap(id)
-	if AstralCharacters[id] and AstralCharacters[id].map then
-		return AstralCharacters[id].map
+	if nCharacters[id] and nCharacters[id].map then
+		return nCharacters[id].map
 	else
 		return nil
 	end
@@ -69,7 +69,7 @@ end
 -- @param id int ID for the character
 -- @return string Non-localized faction name
 function e.GetCharacterFaction(id)
-	return AstralCharacters[id].faction
+	return nCharacters[id].faction
 end
 
 -- Clears character IDs
@@ -122,7 +122,7 @@ function e.GetCharacterMapID(unit)
 	local id = e.UnitID(unit)
 	
 	if id then 
-		return AstralKeys[id].dungeon_id
+		return nKeys[id].dungeon_id
 	else
 		return nil
 	end
@@ -134,7 +134,7 @@ function e.GetCharacterKeyLevel(unit)
 	local id = e.UnitID(unit)
 
 	if id then 
-		return AstralKeys[id].key_level
+		return nKeys[id].key_level
 	else
 		return nil
 	end

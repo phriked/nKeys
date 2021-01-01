@@ -40,7 +40,7 @@ L['LIST_ADD_HELPER_TEXT'] = 'Add units to list by right clicking a unit in your 
 L['OKAY'] = OKAY
 
 -- Announce messages
-L['ANNOUNCE_NEW_KEY'] = 'Astral Keys: New key %s'
+L['ANNOUNCE_NEW_KEY'] = 'n Keys: New key %s'
 L['NO_KEY'] = 'No key'
 L['KEYS_RESPOND_ON_NO_KEY'] = 'Respond even if you do not have a key'
 

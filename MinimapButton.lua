@@ -1,20 +1,20 @@
 local e, L = unpack(select(2, ...))
 
-local addon = LibStub("AceAddon-3.0"):NewAddon("AstralKeys", "AceConsole-3.0")
+local addon = LibStub("AceAddon-3.0"):NewAddon("nKeys", "AceConsole-3.0")
 
-local astralkeysLDB = LibStub("LibDataBroker-1.1"):NewDataObject("AstralKeys", {
+local nkeysLDB = LibStub("LibDataBroker-1.1"):NewDataObject("nKeys", {
 	type = "data source",
-	text = "AstralKeys",
-	icon = "Interface\\AddOns\\AstralKeys\\Media\\Texture\\Logo@2x",
+	text = "nKeys",
+	icon = "Interface\\AddOns\\nKeys\\Media\\Texture\\nKeyslogo",
 	OnClick = function(self, button)
 		if button == 'LeftButton' then 
-			e.AstralToggle()
+			e.nToggle()
 		elseif button == 'RightButton' then
-			AstralOptionsFrame:SetShown( not AstralOptionsFrame:IsShown())
+			nOptionsFrame:SetShown( not nOptionsFrame:IsShown())
 		end  
 	end,
 	OnTooltipShow = function(tooltip)
-		tooltip:AddLine("Astral Keys")
+		tooltip:AddLine("n Keys")
 		tooltip:AddLine('Left click to toggle main window')
 		tooltip:AddLine('Right Click to toggle options')
 	end,
@@ -23,12 +23,16 @@ local astralkeysLDB = LibStub("LibDataBroker-1.1"):NewDataObject("AstralKeys", {
 e.icon = LibStub("LibDBIcon-1.0")
 
 function addon:OnInitialize()
-	self.db = LibStub("AceDB-3.0"):New("AstralMinimap", {
+	local showButton = true
+	if nKeysSettings.general and not nKeysSettings.general.show_minimap_button.isEnabled then
+		showButton = false
+	end
+	self.db = LibStub("AceDB-3.0"):New("nMinimap", {
 		profile = {
 			minimap = {
-				hide = not AstralKeysSettings.general.show_minimap_button.isEnabled,
+				hide = not showButton,
 			},
 		},
 	})
-	e.icon:Register("AstralKeys", astralkeysLDB, self.db.profile.minimap)
+	e.icon:Register("nKeys", nkeysLDB, self.db.profile.minimap)
 end

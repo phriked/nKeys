@@ -1,13 +1,13 @@
 local e, L = unpack(select(2, ...))
 
-AstralEvents = CreateFrame('FRAME', 'AstralEvents')
-AstralEvents.dtbl = {}
+nEvents = CreateFrame('FRAME', 'nEvents')
+nEvents.dtbl = {}
 
 -- Creates new event object
 -- @param f Function to be called on event
 -- @param name Name for the function for identification
 -- @return Event object with method to be called on event fire
-function AstralEvents:NewObject(f, name)
+function nEvents:NewObject(f, name)
 	local obj = {}
 
 	obj.name = name or 'anonymous'
@@ -20,13 +20,13 @@ end
 -- @param event Event that is fired when function is to be called
 -- @param f Function to be called when event is fired
 -- @param name Name of function, used as an identifier
-function AstralEvents:Register(event, f, name)
+function nEvents:Register(event, f, name)
 	if self:IsRegistered(event, name) then return end -- Event already registered with same name, bail out
 	local obj = self:NewObject(f, name)
 
 	if not self.dtbl[event] then 
 		self.dtbl[event] = {}
-		AstralEvents:RegisterEvent(event)
+		nEvents:RegisterEvent(event)
 	end
 	self.dtbl[event][name] = obj
 end
@@ -34,7 +34,7 @@ end
 -- Unregisters function from being called on event
 -- @param event Event the object's method is to be removed from
 -- @name The name of the object to be removed
-function AstralEvents:Unregister(event, name)
+function nEvents:Unregister(event, name)
 	local objs = self.dtbl[event]
 	if not objs then return end
 	objs[name] = nil
@@ -48,7 +48,7 @@ end
 -- @param event The event the object is to be called on
 -- @param name The name of the object that is to be checked
 -- @return True or false if the object is bound to an event
-function AstralEvents:IsRegistered(event, name)
+function nEvents:IsRegistered(event, name)
 	local objs = self.dtbl[event]
 	if not objs then return false end
 
@@ -63,7 +63,7 @@ end
 -- @param event Event to be queried
 -- @param handler Object name to be retrieved
 -- @return function The function pertaining to the given handler for said event
-function AstralEvents:GetRegisteredFunction(event, handler)
+function nEvents:GetRegisteredFunction(event, handler)
 	local objs = self.dtbl[event]
 	if not objs then return end
 
@@ -77,7 +77,7 @@ end
 -- On event handler passes arguements onto methods to each function
 -- @param event Event that was fired
 -- @param ... Arguments for said event
-function AstralEvents:OnEvent(event, ...)
+function nEvents:OnEvent(event, ...)
 	local objs = self.dtbl[event]
 	if not objs then return end
 	for _, obj in pairs(objs) do
@@ -85,4 +85,4 @@ function AstralEvents:OnEvent(event, ...)
 	end
 end
 
-AstralEvents:SetScript('OnEvent', AstralEvents.OnEvent)
+nEvents:SetScript('OnEvent', nEvents.OnEvent)

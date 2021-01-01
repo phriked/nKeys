@@ -16,15 +16,15 @@ function e.UnitID(unit)
 end
 
 function e.UnitName(id)
-	return AstralKeys[id].unit:sub(1, AstralKeys[id].unit:find('-') - 1)
+	return nKeys[id].unit:sub(1, nKeys[id].unit:find('-') - 1)
 end
 
 function e.Unit(id)
-	return AstralKeys[id].unit
+	return nKeys[id].unit
 end
 
 function e.UnitBTag(id)
-	return AstralKeys[id].btag
+	return nKeys[id].btag
 end
 
 function e.UnitGUID(unit)
@@ -44,20 +44,20 @@ end
 -- @param id int ID number for the unit
 function e.UnitClass(id)
 	if not id then return nil end
-	return AstralKeys[id].class
+	return nKeys[id].class
 end
 
 function e.UnitKeyLevel(id)
 	if not id then return nil end
-	return AstralKeys[id].key_level
+	return nKeys[id].key_level
 end
 
 function e.UnitMapID(id)
 	if not id then return nil end
-	return AstralKeys[id].dungeon_id
+	return nKeys[id].dungeon_id
 end
 
 function e.UnitWeeklyBest(id)
 	if not id then return nil end
-	return AstralKeys[id].weekly_best
+	return nKeys[id].weekly_best
 end

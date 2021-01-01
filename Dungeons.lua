@@ -24,10 +24,10 @@ local function SetDungeonTable()
 		end
 
 	end
-	AstralEvents:Unregister('CHALLENGE_MODE_MAPS_UPDATE', 'SetDungeonTable')
+	nEvents:Unregister('CHALLENGE_MODE_MAPS_UPDATE', 'SetDungeonTable')
 end
 
-AstralEvents:Register('CHALLENGE_MODE_MAPS_UPDATE', SetDungeonTable, 'SetDungeonTable')
+nEvents:Register('CHALLENGE_MODE_MAPS_UPDATE', SetDungeonTable, 'SetDungeonTable')
 
 -- Shadowlands Dungeons
 DUNGEON_TABLE[375] = {}

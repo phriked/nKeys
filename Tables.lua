@@ -21,13 +21,13 @@ local function ListFilter(A, filters)
 	end
 
 	for i = 1, #A do
-		if AstralKeysSettings.frame.show_offline.isEnabled then
+		if nKeysSettings.frame.show_offline.isEnabled then
 			A[i].isShown = true
 		else
 			A[i].isShown = e.IsUnitOnline(A[i].character_name)
 		end
 
-		if not AstralKeysSettings.friendOptions.show_other_faction.isEnabled then
+		if not nKeysSettings.friendOptions.show_other_faction.isEnabled then
 			A[i].isShown = A[i].isShown and tonumber(A[i].faction) == e.FACTION
 		end
 
@@ -63,7 +63,7 @@ end
 local function CompareUnitNames(a, b)
 	local s = string.lower(a.btag or a.character_name)
 	local t = string.lower(b.btag or b.character_name)
-	if AstralKeysSettings.frame.orientation == 0 then
+	if nKeysSettings.frame.orientation == 0 then
 		if s > t then
 			return true
 		elseif
@@ -90,12 +90,12 @@ local function ListSort(A, v)
 		table.sort(A, function(a, b)
 			local aOnline = e.IsUnitOnline(a.character_name) and 1 or 0
 			local bOnline = e.IsUnitOnline(b.character_name) and 1 or 0
-			if not AstralKeysSettings.frame.mingle_offline.isEnabled then
+			if not nKeysSettings.frame.mingle_offline.isEnabled then
 				aOnline = true
 				bOnline = true
 			end
 			if aOnline == bOnline then
-				if AstralKeysSettings.frame.orientation == 0 then
+				if nKeysSettings.frame.orientation == 0 then
 					if e.GetMapName(a.dungeon_id) > e.GetMapName(b.dungeon_id) then
 						return true
 					elseif e.GetMapName(b.dungeon_id) > e.GetMapName(a.dungeon_id) then
@@ -121,7 +121,7 @@ local function ListSort(A, v)
 			table.sort(A, function(a, b)
 				local aOnline = e.IsUnitOnline(a.character_name) and 1 or 0
 				local bOnline = e.IsUnitOnline(b.character_name) and 1 or 0
-				if not AstralKeysSettings.frame.mingle_offline.isEnabled then
+				if not nKeysSettings.frame.mingle_offline.isEnabled then
 					aOnline = true
 					bOnline = true
 				end
@@ -135,12 +135,12 @@ local function ListSort(A, v)
 			table.sort(A, function(a, b) 
 				local aOnline = e.IsUnitOnline(a.character_name) and 1 or 0
 				local bOnline = e.IsUnitOnline(b.character_name) and 1 or 0
-				if not AstralKeysSettings.frame.mingle_offline.isEnabled then
+				if not nKeysSettings.frame.mingle_offline.isEnabled then
 					aOnline = true
 					bOnline = true
 				end
 				if aOnline == bOnline then
-					if AstralKeysSettings.frame.orientation == 0 then
+					if nKeysSettings.frame.orientation == 0 then
 						if a[v] > b[v] then
 							return true
 						elseif

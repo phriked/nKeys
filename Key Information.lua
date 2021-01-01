@@ -17,11 +17,11 @@ local function UpdateWeekly()
 	local characterID = e.GetCharacterID(e.Player())
 	local characterWeeklyBest = e.GetCharacterBestLevel(characterID)
 	if IsInGuild() then
-		AstralComs:NewMessage('AstralKeys', 'updateWeekly ' .. characterWeeklyBest, 'GUILD')
+		nComs:NewMessage('nKeys', 'updateWeekly ' .. characterWeeklyBest, 'GUILD')
 	else
 		local id = e.UnitID(e.Player())
 		if id then
-			AstralKeys[id][5] = characterWeeklyBest
+			nKeys[id][5] = characterWeeklyBest
 			e.UpdateFrames()
 		end
 	end
@@ -37,18 +37,18 @@ local function InitData()
 		C_MythicPlus.RequestRewards()
 		return
 	end
-	AstralEvents:Unregister('CHALLENGE_MODE_MAPS_UPDATE', 'initData')
-	C_ChatInfo.RegisterAddonMessagePrefix('AstralKeys')
+	nEvents:Unregister('CHALLENGE_MODE_MAPS_UPDATE', 'initData')
+	C_ChatInfo.RegisterAddonMessagePrefix('nKeys')
 	e.FindKeyStone(true, false)
 	e.UpdateCharacterBest() 	
 	if IsInGuild() then
-		AstralComs:NewMessage('AstralKeys', 'request', 'GUILD')
+		nComs:NewMessage('nKeys', 'request', 'GUILD')
 	end
 
 	if UnitLevel('player') < e.EXPANSION_LEVEL then return end
-	AstralEvents:Register('CHALLENGE_MODE_MAPS_UPDATE', UpdateWeekly, 'weeklyCheck')
+	nEvents:Register('CHALLENGE_MODE_MAPS_UPDATE', UpdateWeekly, 'weeklyCheck')
 end
-AstralEvents:Register('CHALLENGE_MODE_MAPS_UPDATE', InitData, 'initData')
+nEvents:Register('CHALLENGE_MODE_MAPS_UPDATE', InitData, 'initData')
 
 --|cffa335ee|Hkeystone:158923:251:12:10:5:13:117|h[Keystone: The Underrot (12)]|h|r
 -- COLOUR[3] returns epic color hex code
@@ -62,7 +62,7 @@ function e.CreateKeyLink(mapID, keyLevel)
 	return strformat('|c' .. COLOUR[3] .. '|Hkeystone:158923:%d:%d:%d:%d:%d:%d|h[Keystone: %s (%d)]|h|r', mapID, keyLevel, e.AffixOne(), e.AffixTwo(), e.AffixThree(), e.AffixFour(), mapName, keyLevel):gsub('\124\124', '\124')
 end
 
-AstralEvents:Register('CHALLENGE_MODE_COMPLETED', function()
+nEvents:Register('CHALLENGE_MODE_COMPLETED', function()
 	C_Timer.After(3, function()
 		C_MythicPlus.RequestRewards()
 		e.FindKeyStone(true, true)
@@ -75,10 +75,10 @@ local function ParseLootMsgForKey(...)
 	if not unit == e.PlayerName() then return end
 
 	if string.lower(msg):find('keystone') then -- Look a key, let's bind a function to bag_update event to find that key
-		AstralEvents:Register('BAG_UPDATE', function()
+		nEvents:Register('BAG_UPDATE', function()
 			e.FindKeyStone(true, true)
-			AstralEvents:Unregister('BAG_UPDATE', 'bagUpdate')
-			AstralEvents:Unregister('CHAT_MSG_LOOT', 'lootCheck')
+			nEvents:Unregister('BAG_UPDATE', 'bagUpdate')
+			nEvents:Unregister('CHAT_MSG_LOOT', 'lootCheck')
 			end, 'bagUpdate')
 	end
 end
@@ -109,31 +109,31 @@ function e.FindKeyStone(sendUpdate, anounceKey)
 		msg = string.format('%s:%s:%d:%d:%d:%d:%s', e.Player(), e.PlayerClass(), mapID, keyLevel, weeklyBest, e.Week, e.FACTION)
 	end
 
-	if not mapID and not AstralEvents:IsRegistered('CHAT_MSG_LOOT', 'loot_msg_parse') then
-		AstralEvents:Register('CHAT_MSG_LOOT', ParseLootMsgForKey, 'loot_msg_parse')
+	if not mapID and not nEvents:IsRegistered('CHAT_MSG_LOOT', 'loot_msg_parse') then
+		nEvents:Register('CHAT_MSG_LOOT', ParseLootMsgForKey, 'loot_msg_parse')
 	end
 
 	local oldMap, oldLevel = e.UnitMapID(e.UnitID(e.Player())), e.UnitKeyLevel(e.UnitID(e.Player()))
 
 	-- Key found, unregister function, no longer needed
-	if mapID and AstralEvents:IsRegistered('BAG_UPDATE', 'bagUpdate') then
-		AstralEvents:Unregister('BAG_UPDATE', 'bagUpdate')
+	if mapID and nEvents:IsRegistered('BAG_UPDATE', 'bagUpdate') then
+		nEvents:Unregister('BAG_UPDATE', 'bagUpdate')
 	end
 
 	if sendUpdate and msg ~= '' then
 		e.PushKeyDataToFriends(msg)
 		if IsInGuild() then
-			AstralComs:NewMessage('AstralKeys', strformat('%s %s', e.UPDATE_VERSION, msg), 'GUILD')
+			nComs:NewMessage('nKeys', strformat('%s %s', e.UPDATE_VERSION, msg), 'GUILD')
 		else -- Not in a guild, who are you people? Whatever, gotta make it work for them as well
 			local id = e.UnitID(e.Player())
 			if id then -- Are we in the DB already?
-				AstralKeys[id][3] = tonumber(mapID)
-				AstralKeys[id][4] = tonumber(keyLevel)
-				AstralKeys[id][6] = e.Week
-				AstralKeys[id][7] = e.WeekTime()
+				nKeys[id][3] = tonumber(mapID)
+				nKeys[id][4] = tonumber(keyLevel)
+				nKeys[id][6] = e.Week
+				nKeys[id][7] = e.WeekTime()
 			else -- Nope, ok, let's add them to the DB manually.
-				AstralKeys[#AstralKeys + 1] = {e.Player(), e.PlayerClass(), tonumber(mapID), tonumber(keyLevel), e.Week, e.WeekTime()}
-				e.SetUnitID(e.Player(), #AstralKeys)
+				nKeys[#nKeys + 1] = {e.Player(), e.PlayerClass(), tonumber(mapID), tonumber(keyLevel), e.Week, e.WeekTime()}
+				e.SetUnitID(e.Player(), #nKeys)
 			end
 		end
 	end
@@ -166,17 +166,17 @@ function e.UpdateCharacterBest()
 
 	local found = false
 
-	for i = 1, #AstralCharacters do
-		if AstralCharacters[i].unit == e.Player() then
+	for i = 1, #nCharacters do
+		if nCharacters[i].unit == e.Player() then
 			found = true
-			AstralCharacters[i].weekly_best = weeklyBest
+			nCharacters[i].weekly_best = weeklyBest
 			break
 		end
 	end
 
 	if not found then
-		table.insert(AstralCharacters, {unit = e.Player(), class = e.PlayerClass(), weekly_best = weeklyBest, faction = e.FACTION})
-		e.SetCharacterID(e.Player(), #AstralCharacters)
+		table.insert(nCharacters, {unit = e.Player(), class = e.PlayerClass(), weekly_best = weeklyBest, faction = e.FACTION})
+		e.SetCharacterID(e.Player(), #nCharacters)
 	end
 end
 
@@ -184,7 +184,7 @@ local function MythicPlusStart()
 	e.FindKeyStone(true, false)
 end
 
-AstralEvents:Register('CHALLENGE_MODE_START', MythicPlusStart, 'PlayerEnteredMythic')
+nEvents:Register('CHALLENGE_MODE_START', MythicPlusStart, 'PlayerEnteredMythic')
 
 function e.GetDifficultyColour(keyLevel)
 	if type(keyLevel) ~= 'number' then return COLOUR[1] end -- return white for any strings or non-number values

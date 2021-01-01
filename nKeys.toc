@@ -1,9 +1,9 @@
 ## Interface: 90002
-## Title: Astral Keys
+## Title: n Keys
 ## Notes: Keystone Manager for Guilds and Friends
 ## Author: Phrike
 ## Version: 3.35
-## SavedVariables: AstralKeys, AstralCharacters, AstralKeysSettings, AstralMinimap, AstralAffixes, AstralLists, AstralUnits
+## SavedVariables: nKeys, nCharacters, nKeysSettings, nMinimap, nAffixes, nLists, nUnits
 
 Init.lua
 Localization\Localization.lua
@@ -37,7 +37,7 @@ Character Info.lua
 Dungeons.lua
 Key Information.lua
 
-AstralKeys.lua
+nKeys.lua
 Frame Functions.lua
 Frame.xml
 MinimapButton.lua

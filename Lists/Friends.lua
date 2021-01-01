@@ -81,7 +81,7 @@ function e.BNFriendUpdate(index)
 		end
 	end
 end
-AstralEvents:Register('BN_FRIEND_INFO_CHANGED', e.BNFriendUpdate, 'update_BNFriend')
+nEvents:Register('BN_FRIEND_INFO_CHANGED', e.BNFriendUpdate, 'update_BNFriend')
 
 ----------------------------------------------------
 ----------------------------------------------------
@@ -121,7 +121,7 @@ local function serverRequestRespond(gameAccountID)
 		realm = realm:gsub('%s+', '')
 	end
 
-	AstralComs:NewMessage('AstralKeys', 'serverRespond', realm, gameAccountID)
+	nComs:NewMessage('nKeys', 'serverRespond', realm, gameAccountID)
 end
 
 local function UpdateNonBNetFriendList()
@@ -145,14 +145,14 @@ local function UpdateNonBNetFriendList()
 		e.BNFriendUpdate(index)
 	end
 end
-AstralEvents:Register('FRIENDLIST_UPDATE', UpdateNonBNetFriendList, 'update_non_bnet_list')
+nEvents:Register('FRIENDLIST_UPDATE', UpdateNonBNetFriendList, 'update_non_bnet_list')
 
 ----------------------------------------------------
 ----------------------------------------------------
 -- Friend Syncing
 
 local function RecieveKey(msg, sender)
-	if not AstralKeysSettings.friendOptions.friend_sync.isEnabled then return end
+	if not nKeysSettings.friendOptions.friend_sync.isEnabled then return end
 	
 	local timeStamp = e.WeekTime()
 	local unit, class, dungeonID, keyLevel, weekly_best, week, faction = strsplit(':', msg)
@@ -171,14 +171,14 @@ local function RecieveKey(msg, sender)
 	local id = e.UnitID(unit)
 
 	if id then
-		AstralKeys[id].dungeon_id = dungeonID
-		AstralKeys[id].key_level = keyLevel
-		AstralKeys[id].week = week
-		AstralKeys[id].time_stamp = timeStamp
-		AstralKeys[id].weekly_best = weekly_best
-		AstralKeys[id].btag = btag
+		nKeys[id].dungeon_id = dungeonID
+		nKeys[id].key_level = keyLevel
+		nKeys[id].week = week
+		nKeys[id].time_stamp = timeStamp
+		nKeys[id].weekly_best = weekly_best
+		nKeys[id].btag = btag
 	else
-		table.insert(AstralKeys, {
+		table.insert(nKeys, {
 			unit = unit,
 			btag = btag,
 			class = class,
@@ -190,7 +190,7 @@ local function RecieveKey(msg, sender)
 			weekly_best = weekly_best,
 			source = 'friend',
 		})
-		e.SetUnitID(unit, #AstralKeys)
+		e.SetUnitID(unit, #nKeys)
 		C_FriendList.ShowFriends()
 	end
 	e.AddUnitToSortTable(unit, btag, class, faction, dungeonID, keyLevel, weekly_best, 'FRIENDS')
@@ -201,15 +201,15 @@ local function RecieveKey(msg, sender)
 		e.UpdateFrames()
 	end
 end
-AstralComs:RegisterPrefix('BNET', UPDATE_VERSION, RecieveKey)
-AstralComs:RegisterPrefix('WHISPER', UPDATE_VERSION, RecieveKey)
+nComs:RegisterPrefix('BNET', UPDATE_VERSION, RecieveKey)
+nComs:RegisterPrefix('WHISPER', UPDATE_VERSION, RecieveKey)
 
 local function SyncFriendUpdate(entry, sender)
-	if not AstralKeysSettings.friendOptions.friend_sync.isEnabled then return end
+	if not nKeysSettings.friendOptions.friend_sync.isEnabled then return end
 
-	if AstralKeyFrame:IsShown() then
-		AstralKeyFrame:SetScript('OnUpdate', AstralKeyFrame.OnUpdate)
-		AstralKeyFrame.updateDelay = 0
+	if nKeyFrame:IsShown() then
+		nKeyFrame:SetScript('OnUpdate', nKeyFrame.OnUpdate)
+		nKeyFrame.updateDelay = 0
 	end
 
 	local btag
@@ -217,9 +217,9 @@ local function SyncFriendUpdate(entry, sender)
 		btag = BNET_GAID_TO_BATTLETAG[sender]
 	end
 
-	if AstralKeyFrame:IsShown() then
-		AstralKeyFrame:SetScript('OnUpdate', AstralKeyFrame.OnUpdate)
-		AstralKeyFrame.updateDelay = 0
+	if nKeyFrame:IsShown() then
+		nKeyFrame:SetScript('OnUpdate', nKeyFrame.OnUpdate)
+		nKeyFrame.updateDelay = 0
 	end
 
 	local unit, class, dungeonID, keyLevel, week, timeStamp
@@ -240,14 +240,14 @@ local function SyncFriendUpdate(entry, sender)
 		if week >= e.Week then
 			local id = e.UnitID(unit)
 			if id then
-				AstralKeys[id].dungeon_id = dungeonID
-				AstralKeys[id].key_level = keyLevel
-				AstralKeys[id].week = week
-				AstralKeys[id].time_stamp = timeStamp
-				AstralKeys[id].weekly_best = weekly_best
-				AstralKeys[id].btag = btag
+				nKeys[id].dungeon_id = dungeonID
+				nKeys[id].key_level = keyLevel
+				nKeys[id].week = week
+				nKeys[id].time_stamp = timeStamp
+				nKeys[id].weekly_best = weekly_best
+				nKeys[id].btag = btag
 			else
-				table.insert(AstralKeys, {
+				table.insert(nKeys, {
 					unit = unit,
 					btag = btag,
 					class = class,
@@ -259,7 +259,7 @@ local function SyncFriendUpdate(entry, sender)
 					weekly_best = weekly_best,
 					source = 'friend'
 				})
-				e.SetUnitID(unit, #AstralKeys)
+				e.SetUnitID(unit, #nKeys)
 				C_FriendList.ShowFriends()
 			end
 			e.AddUnitToList(unit, 'FRIENDS', btag)
@@ -269,34 +269,34 @@ local function SyncFriendUpdate(entry, sender)
 	end
 	entry = nil
 end
-AstralComs:RegisterPrefix('BNET', SYNC_VERSION, SyncFriendUpdate)
-AstralComs:RegisterPrefix('WHISPER', SYNC_VERSION, SyncFriendUpdate)
+nComs:RegisterPrefix('BNET', SYNC_VERSION, SyncFriendUpdate)
+nComs:RegisterPrefix('WHISPER', SYNC_VERSION, SyncFriendUpdate)
 
 local function UpdateWeekly(msg)
 	local unit, weekly_best = strsplit(':', msg)
 
 	local id = e.UnitID(unit)
 	if id then
-		AstralKeys[id].weekly_best = tonumber(weekly_best)
-		AstralKeys[id].time_stamp = e.WeekTime()
+		nKeys[id].weekly_best = tonumber(weekly_best)
+		nKeys[id].time_stamp = e.WeekTime()
 	end
 end
-AstralComs:RegisterPrefix('BNET', 'friendWeekly', UpdateWeekly)
-AstralComs:RegisterPrefix('WHISPER', 'friendWeekly', UpdateWeekly)
+nComs:RegisterPrefix('BNET', 'friendWeekly', UpdateWeekly)
+nComs:RegisterPrefix('WHISPER', 'friendWeekly', UpdateWeekly)
 
 local messageStack = {}
 local messageQueue = {}
 
 local function PushKeysToFriends(target)
-	if not AstralKeysSettings.friendOptions.friend_sync.isEnabled then return end
+	if not nKeysSettings.friendOptions.friend_sync.isEnabled then return end
 	wipe(messageStack)
 	wipe(messageQueue)
 
-	for i = 1, #AstralCharacters do
-		local id = e.UnitID(AstralCharacters[i].unit)
+	for i = 1, #nCharacters do
+		local id = e.UnitID(nCharacters[i].unit)
 		if id then -- We have a key for this character, let's get the message and queue it up
 			local map, level = e.UnitMapID(id), e.UnitKeyLevel(id)			
-			messageStack[#messageStack + 1] = strformat('%s_', strformat('%s:%s:%d:%d:%d:%d:%d:%d', AstralCharacters[i].unit, e.UnitClass(id), map, level, e.Week, AstralKeys[id][7], AstralCharacters[i].faction, AstralCharacters[i].weekly_best)) -- name-server:class:mapID:keyLevel:week#:weekTime:faction:weekly
+			messageStack[#messageStack + 1] = strformat('%s_', strformat('%s:%s:%d:%d:%d:%d:%d:%d', nCharacters[i].unit, e.UnitClass(id), map, level, e.Week, nKeys[id][7], nCharacters[i].faction, nCharacters[i].weekly_best)) -- name-server:class:mapID:keyLevel:week#:weekTime:faction:weekly
 		end
 	end
 
@@ -324,36 +324,36 @@ function e.PushKeyDataToFriends(data, target)
 		for gaID in pairs(BNFriendList) do
 			if type(data) == 'table' then
 				for i = 1, #data do
-					AstralComs:NewMessage('AstralKeys', strformat('%s %s', SYNC_VERSION, data[i]), 'BNET', gaID)
+					nComs:NewMessage('nKeys', strformat('%s %s', SYNC_VERSION, data[i]), 'BNET', gaID)
 				end
 			else
-				AstralComs:NewMessage('AstralKeys', strformat('%s %s', UPDATE_VERSION, data), 'BNET', gaID)
+				nComs:NewMessage('nKeys', strformat('%s %s', UPDATE_VERSION, data), 'BNET', gaID)
 			end
 		end
 		for player in pairs(NonBNFriend_List) do
 			if type(data) == 'table' then
 				for i = 1, #data do
-					AstralComs:NewMessage('AstralKeys', strformat('%s %s', SYNC_VERSION, data[i]), 'WHISPER', player)
+					nComs:NewMessage('nKeys', strformat('%s %s', SYNC_VERSION, data[i]), 'WHISPER', player)
 				end
 			else
-				AstralComs:NewMessage('AstralKeys', strformat('%s %s', UPDATE_VERSION, data), 'WHISPER', player)
+				nComs:NewMessage('nKeys', strformat('%s %s', UPDATE_VERSION, data), 'WHISPER', player)
 			end
 		end
 	else
 		if type(data) == 'table' then
 			for i = 1, #data do
-				AstralComs:NewMessage('AstralKeys', strformat('%s %s', SYNC_VERSION, data[i]), tonumber(target) and 'BNET' or 'WHISPER', target)
+				nComs:NewMessage('nKeys', strformat('%s %s', SYNC_VERSION, data[i]), tonumber(target) and 'BNET' or 'WHISPER', target)
 			end
 		else
-			AstralComs:NewMessage('AstralKeys',  strformat('%s %s', UPDATE_VERSION, data), tonumber(target) and 'BNET' or 'WHISPER', target)
+			nComs:NewMessage('nKeys',  strformat('%s %s', UPDATE_VERSION, data), tonumber(target) and 'BNET' or 'WHISPER', target)
 		end
 	end
 end
 
 
--- Let's find out which friends are using Astral Keys, no need to spam every friend, just the ones using Astral keys
-local function PingFriendsForAstralKeys()
-	if not AstralKeysSettings.friendOptions.friend_sync.isEnabled then return end
+-- Let's find out which friends are using n Keys, no need to spam every friend, just the ones using n keys
+local function PingFriendsFornKeys()
+	if not nKeysSettings.friendOptions.friend_sync.isEnabled then return end
 	for i = 1, C_FriendList.GetNumOnlineFriends() do -- Only parse over online friends
 		local friendInfo = C_FriendList.GetFriendInfoByIndex(i)
 		local name = strformat('%s-%s', friendInfo.name, e.PlayerRealm())
@@ -366,54 +366,54 @@ local function PingFriendsForAstralKeys()
 	end
 
 	for gaID in pairs(BNFriendList) do
-		AstralComs:NewMessage('AstralKeys', 'BNet_query ping', 'BNET', gaID)
+		nComs:NewMessage('nKeys', 'BNet_query ping', 'BNET', gaID)
 	end
 
 	for player in pairs(NonBNFriend_List) do
-		AstralComs:NewMessage('AstralKeys', 'BNet_query ping', 'WHISPER', player)
+		nComs:NewMessage('nKeys', 'BNet_query ping', 'WHISPER', player)
 	end
 
-	AstralEvents:Unregister('FRIENDLIST_UPDATE', 'pingFriends')
+	nEvents:Unregister('FRIENDLIST_UPDATE', 'pingFriends')
 end
 
 -- Figures out who is using AK on friends list, sends them a response and key data
 local function PingResponse(msg, sender)
 	if msg:find('ping') then
-		AstralComs:NewMessage('AstralKeys', 'BNet_query response', type(sender) == 'number' and 'BNET' or 'WHISPER', sender)
+		nComs:NewMessage('nKeys', 'BNet_query response', type(sender) == 'number' and 'BNET' or 'WHISPER', sender)
 	end
 	PushKeysToFriends(sender)
 end
-AstralComs:RegisterPrefix('WHISPER', 'BNet_query', PingResponse)
-AstralComs:RegisterPrefix('BNET', 'BNet_query', PingResponse)
+nComs:RegisterPrefix('WHISPER', 'BNet_query', PingResponse)
+nComs:RegisterPrefix('BNET', 'BNet_query', PingResponse)
 
 local function Init()
 	C_FriendList.ShowFriends()
-	AstralEvents:Unregister('PLAYER_ENTERING_WORLD', 'InitFriends')
+	nEvents:Unregister('PLAYER_ENTERING_WORLD', 'InitFriends')
 end
-AstralEvents:Register('FRIENDLIST_UPDATE', PingFriendsForAstralKeys, 'pingFriends')
-AstralEvents:Register('PLAYER_ENTERING_WORLD', Init, 'InitFriends')
+nEvents:Register('FRIENDLIST_UPDATE', PingFriendsFornKeys, 'pingFriends')
+nEvents:Register('PLAYER_ENTERING_WORLD', Init, 'InitFriends')
 
 
 function e.ToggleFriendSync()
-	if AstralKeysSettings.friendOptions.friend_sync.isEnabled then
-		AstralComs:RegisterPrefix('WHISPER', 'BNet_query', PingResponse)
-		AstralComs:RegisterPrefix('BNET', 'BNet_query', PingResponse)
-		AstralComs:RegisterPrefix('BNET', SYNC_VERSION, SyncFriendUpdate)
-		AstralComs:RegisterPrefix('WHISPER', SYNC_VERSION, SyncFriendUpdate)
-		AstralComs:RegisterPrefix('BNET', UPDATE_VERSION, RecieveKey)
-		AstralComs:RegisterPrefix('WHISPER', UPDATE_VERSION, RecieveKey)
-		AstralEvents:Register('FRIENDLIST_UPDATE', UpdateNonBNetFriendList, 'update_non_bnet_list')
-		AstralEvents:Register('BN_FRIEND_INFO_CHANGED', e.BNFriendUpdate, 'update_BNFriend')
-		PingFriendsForAstralKeys()
+	if nKeysSettings.friendOptions.friend_sync.isEnabled then
+		nComs:RegisterPrefix('WHISPER', 'BNet_query', PingResponse)
+		nComs:RegisterPrefix('BNET', 'BNet_query', PingResponse)
+		nComs:RegisterPrefix('BNET', SYNC_VERSION, SyncFriendUpdate)
+		nComs:RegisterPrefix('WHISPER', SYNC_VERSION, SyncFriendUpdate)
+		nComs:RegisterPrefix('BNET', UPDATE_VERSION, RecieveKey)
+		nComs:RegisterPrefix('WHISPER', UPDATE_VERSION, RecieveKey)
+		nEvents:Register('FRIENDLIST_UPDATE', UpdateNonBNetFriendList, 'update_non_bnet_list')
+		nEvents:Register('BN_FRIEND_INFO_CHANGED', e.BNFriendUpdate, 'update_BNFriend')
+		PingFriendsFornKeys()
 	else
-		AstralComs:UnregisterPrefix('WHISPER', 'BNet_query', PingResponse)
-		AstralComs:UnregisterPrefix('BNET', 'BNet_query', PingResponse)
-		AstralComs:UnregisterPrefix('BNET', SYNC_VERSION, SyncFriendUpdate)
-		AstralComs:UnregisterPrefix('WHISPER', SYNC_VERSION, SyncFriendUpdate)
-		AstralComs:UnregisterPrefix('BNET', UPDATE_VERSION, RecieveKey)
-		AstralComs:UnregisterPrefix('WHISPER', UPDATE_VERSION, RecieveKey)
-		AstralEvents:Unregister('FRIENDLIST_UPDATE', UpdateNonBNetFriendList, 'update_non_bnet_list')
-		AstralEvents:Unregister('BN_FRIEND_INFO_CHANGED', e.BNFriendUpdate, 'update_BNFriend')
+		nComs:UnregisterPrefix('WHISPER', 'BNet_query', PingResponse)
+		nComs:UnregisterPrefix('BNET', 'BNet_query', PingResponse)
+		nComs:UnregisterPrefix('BNET', SYNC_VERSION, SyncFriendUpdate)
+		nComs:UnregisterPrefix('WHISPER', SYNC_VERSION, SyncFriendUpdate)
+		nComs:UnregisterPrefix('BNET', UPDATE_VERSION, RecieveKey)
+		nComs:UnregisterPrefix('WHISPER', UPDATE_VERSION, RecieveKey)
+		nEvents:Unregister('FRIENDLIST_UPDATE', UpdateNonBNetFriendList, 'update_non_bnet_list')
+		nEvents:Unregister('BN_FRIEND_INFO_CHANGED', e.BNFriendUpdate, 'update_BNFriend')
 	end
 end
 
@@ -439,13 +439,13 @@ local function FriendFilter(A, filters)
 	end
 
 	for i = 1, #A do
-		if AstralKeysSettings.frame.show_offline.isEnabled then
+		if nKeysSettings.frame.show_offline.isEnabled then
 			A[i].isShown = true
 		else
 			A[i].isShown = e.IsFriendOnline(A[i].character_name)
 		end
 
-		if not AstralKeysSettings.friendOptions.show_other_faction.isEnabled then
+		if not nKeysSettings.friendOptions.show_other_faction.isEnabled then
 			A[i].isShown = A[i].isShown and tonumber(A[i].faction) == e.FACTION
 		end
 
@@ -482,7 +482,7 @@ e.AddListFilter('FRIENDS', FriendFilter)
 local function CompareFriendNames(a, b)
 	local s = string.lower(a.btag or '|')
 	local t = string.lower(b.btag or '|')
-	if AstralKeysSettings.frame.orientation == 0 then
+	if nKeysSettings.frame.orientation == 0 then
 		if s > t then
 			return true
 		elseif
@@ -508,12 +508,12 @@ local function FriendSort(A, v)
 		table.sort(A, function(a, b)
 			local aOnline = e.IsFriendOnline(a.character_name) and 1 or 0
 			local bOnline = e.IsFriendOnline(b.character_name) and 1 or 0
-			if not AstralKeysSettings.frame.mingle_offline.isEnabled then
+			if not nKeysSettings.frame.mingle_offline.isEnabled then
 				aOnline = true
 				bOnline = true
 			end
 			if aOnline == bOnline then
-				if AstralKeysSettings.frame.orientation == 0 then
+				if nKeysSettings.frame.orientation == 0 then
 					if e.GetMapName(a.mapID) > e.GetMapName(b.mapID) then
 						return true
 					elseif e.GetMapName(b.mapID) > e.GetMapName(a.mapID) then
@@ -539,7 +539,7 @@ local function FriendSort(A, v)
 			table.sort(A, function(a, b)
 				local aOnline = e.IsFriendOnline(a.character_name) and 1 or 0
 				local bOnline = e.IsFriendOnline(b.character_name) and 1 or 0
-				if not AstralKeysSettings.frame.mingle_offline.isEnabled then
+				if not nKeysSettings.frame.mingle_offline.isEnabled then
 					aOnline = true
 					bOnline = true
 				end
@@ -553,12 +553,12 @@ local function FriendSort(A, v)
 			table.sort(A, function(a, b) 
 				local aOnline = e.IsFriendOnline(a.character_name) and 1 or 0
 				local bOnline = e.IsFriendOnline(b.character_name) and 1 or 0
-				if not AstralKeysSettings.frame.mingle_offline.isEnabled then
+				if not nKeysSettings.frame.mingle_offline.isEnabled then
 					aOnline = true
 					bOnline = true
 				end
 				if aOnline == bOnline then
-					if AstralKeysSettings.frame.orientation == 0 then
+					if nKeysSettings.frame.orientation == 0 then
 						if a[v] > b[v] then
 							return true
 						elseif
@@ -590,7 +590,7 @@ e.AddListSort('FRIENDS', FriendSort)
 -- Friend's list Hooking
 do
 	for i = 1, 5 do
-		local textString = FriendsTooltip:CreateFontString('FriendsTooltipAstralKeysInfo' .. i, 'ARTWORK', 'FriendsFont_Small')
+		local textString = FriendsTooltip:CreateFontString('FriendsTooltipnKeysInfo' .. i, 'ARTWORK', 'FriendsFont_Small')
 		textString:SetJustifyH('LEFT')
 		textString:SetSize(168, 0)
 		textString:SetTextColor(0.486, 0.518, 0.541)
@@ -599,9 +599,9 @@ do
 	local OnEnter, OnHide
 	function OnEnter(self)
 		if not self.id then return end -- Friend Groups adds fake units with no ide for group heeaders
-		if not AstralKeysSettings.general.show_tooltip_key.isEnabled then return end
+		if not nKeysSettings.general.show_tooltip_key.isEnabled then return end
 
-		local left = FRIENDS_TOOLTIP_MAX_WIDTH - FRIENDS_TOOLTIP_MARGIN_WIDTH - FriendsTooltipAstralKeysInfo1:GetWidth()
+		local left = FRIENDS_TOOLTIP_MAX_WIDTH - FRIENDS_TOOLTIP_MARGIN_WIDTH - FriendsTooltipnKeysInfo1:GetWidth()
 		local stringShown = false
 
 		for gameIndex = 1, C_BattleNet.GetFriendNumGameAccounts(self.id) do
@@ -609,7 +609,7 @@ do
 			local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo(self.id, gameIndex)
 			local characterNameString = _G['FriendsTooltipGameAccount' .. gameIndex .. 'Name']
 			local gameInfoString = _G['FriendsTooltipGameAccount' .. gameIndex .. 'Info']
-			local astralKeyString = _G['FriendsTooltipAstralKeysInfo' .. gameIndex]
+			local nKeyString = _G['FriendsTooltipnKeysInfo' .. gameIndex]
 			if not FriendsTooltip.maxWidth then return end -- Why? Who knows
 
 			if (gameAccountInfo) and (gameAccountInfo.clientProgram == BNET_CLIENT_WOW) and (gameAccountInfo.wowProjectID == 1) then -- They are playing retail WoW
@@ -629,26 +629,26 @@ do
 						local fullName = gameAccountInfo.characterName .. '-' .. realmName
 						local id = e.UnitID(fullName)
 						if id then
-							local keyLevel, dungeonID = AstralKeys[id].key_level, AstralKeys[id].dungeon_id
-							astralKeyString:SetWordWrap(false)
-							astralKeyString:SetFormattedText("|cffffd200Current Keystone|r\n%d - %s", keyLevel, e.GetMapName(dungeonID))
-							astralKeyString:SetWordWrap(true)
-							astralKeyString:SetPoint('TOP', characterNameString, 'BOTTOM', 3, -4)
-							gameInfoString:SetPoint('TOP', astralKeyString, 'BOTTOM', 0, 0)
-							astralKeyString:Show()
+							local keyLevel, dungeonID = nKeys[id].key_level, nKeys[id].dungeon_id
+							nKeyString:SetWordWrap(false)
+							nKeyString:SetFormattedText("|cffffd200Current Keystone|r\n%d - %s", keyLevel, e.GetMapName(dungeonID))
+							nKeyString:SetWordWrap(true)
+							nKeyString:SetPoint('TOP', characterNameString, 'BOTTOM', 3, -4)
+							gameInfoString:SetPoint('TOP', nKeyString, 'BOTTOM', 0, 0)
+							nKeyString:Show()
 							stringShown = true
-							FriendsTooltip.height = FriendsTooltip:GetHeight() + astralKeyString:GetStringHeight() + 8
-							FriendsTooltip.maxWidth = max(FriendsTooltip.maxWidth, astralKeyString:GetStringWidth() + left)
+							FriendsTooltip.height = FriendsTooltip:GetHeight() + nKeyString:GetStringHeight() + 8
+							FriendsTooltip.maxWidth = max(FriendsTooltip.maxWidth, nKeyString:GetStringWidth() + left)
 						else
-							astralKeyString:SetText('')
-							astralKeyString:Hide()
+							nKeyString:SetText('')
+							nKeyString:Hide()
 							gameInfoString:SetPoint('TOP', characterNameString, 'BOTTOM', 0, -4)
 						end
 					end
 				end
 			else
-				astralKeyString:SetText('')
-				astralKeyString:Hide()
+				nKeyString:SetText('')
+				nKeyString:Hide()
 			end
 		end
 		
@@ -657,8 +657,8 @@ do
 	end
 
 	function OnHide()
-		FriendsTooltipAstralKeysInfo1:SetText('')
-		FriendsTooltipAstralKeysInfo1:Hide()
+		FriendsTooltipnKeysInfo1:SetText('')
+		FriendsTooltipnKeysInfo1:Hide()
 	end
 
 	local buttons = FriendsListFrameScrollFrame.buttons
@@ -678,7 +678,7 @@ do
 end
 
 local function TooltipHook(self)
-    if not AstralKeysSettings.general.show_tooltip_key.isEnabled then return end
+    if not nKeysSettings.general.show_tooltip_key.isEnabled then return end
 
     local _, uid = self:GetUnit()
     if not UnitIsPlayer(uid) then return end
@@ -699,7 +699,7 @@ local function TooltipHook(self)
     if id then
     	GameTooltip:AddLine(' ')
         GameTooltip:AddLine('Current Keystone')
-        GameTooltip:AddDoubleLine(e.GetMapName(AstralKeys[id].dungeon_id), AstralKeys[id].key_level, 1, 1, 1, 1, 1, 1)
+        GameTooltip:AddDoubleLine(e.GetMapName(nKeys[id].dungeon_id), nKeys[id].key_level, 1, 1, 1, 1, 1, 1)
         return
     end
 end

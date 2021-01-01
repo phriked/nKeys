@@ -16,7 +16,7 @@ local function UpdateGuildList()
 	end
 	e.UpdateFrames()
 end
-AstralEvents:Register('GUILD_ROSTER_UPDATE', UpdateGuildList, 'guildUpdate')
+nEvents:Register('GUILD_ROSTER_UPDATE', UpdateGuildList, 'guildUpdate')
 
 -- Checks to see if a unit is in the player's guild
 -- @param unit Unit name and server
@@ -67,13 +67,13 @@ local function UpdateUnitKey(msg, sender)
 	local id = e.UnitID(unit) -- Is this unit in the db already?
 
 	if id then -- Yep, just change the values then
-		AstralKeys[id].dungeon_id = dungeonID
-		AstralKeys[id].key_level = keyLevel
-		AstralKeys[id].weekly_best = weekly_best
-		AstralKeys[id].week = week
-		AstralKeys[id].time_stamp = timeStamp
+		nKeys[id].dungeon_id = dungeonID
+		nKeys[id].key_level = keyLevel
+		nKeys[id].weekly_best = weekly_best
+		nKeys[id].week = week
+		nKeys[id].time_stamp = timeStamp
 	else -- Nope, let's add them to the DB and index their position
-		table.insert(AstralKeys, {
+		table.insert(nKeys, {
 			unit = unit,
 			btag = btag,
 			class = class,
@@ -85,8 +85,8 @@ local function UpdateUnitKey(msg, sender)
 			weekly_best = weekly_best,
 			source = 'guild'
 		})
-		--AstralKeys[#AstralKeys + 1] = {unit, class, dungeonID, keyLevel, weekly_best, week, timeStamp}
-		e.SetUnitID(unit, #AstralKeys)
+		--nKeys[#nKeys + 1] = {unit, class, dungeonID, keyLevel, weekly_best, week, timeStamp}
+		e.SetUnitID(unit, #nKeys)
 	end
 	e.AddUnitToList(unit, 'GUILD')
 	--e.AddUnitToTable(unit, class, faction, 'GUILD', dungeonID, keyLevel, weekly_best)
@@ -98,13 +98,13 @@ local function UpdateUnitKey(msg, sender)
 		e.UpdateCharacterFrames()
 	end
 end
-AstralComs:RegisterPrefix('GUILD', e.UPDATE_VERSION, UpdateUnitKey)
+nComs:RegisterPrefix('GUILD', e.UPDATE_VERSION, UpdateUnitKey)
 
 local function SyncReceive(entry, sender)
 	local unit, class, dungeonID, keyLevel, weekly_best, week, timeStamp
-	if AstralKeyFrame:IsShown() then
-		AstralKeyFrame:SetScript('OnUpdate', AstralKeyFrame.OnUpdate)
-		AstralKeyFrame.updateDelay = 0
+	if nKeyFrame:IsShown() then
+		nKeyFrame:SetScript('OnUpdate', nKeyFrame.OnUpdate)
+		nKeyFrame.updateDelay = 0
 	end
 
 	local _pos = 0
@@ -127,15 +127,15 @@ local function SyncReceive(entry, sender)
 
 			local id = e.UnitID(unit)
 			if id then
-				if AstralKeys[id].time_stamp < timeStamp then
-					AstralKeys[id].weekly_best = weekly_best >= AstralKeys[id].weekly_best and weekly_best or AstralKeys[id].weekly_best
-					AstralKeys[id].dungeon_id = dungeonID
-					AstralKeys[id].key_level = keyLevel
-					AstralKeys[id].week = week
-					AstralKeys[id].time_stamp = timeStamp
+				if nKeys[id].time_stamp < timeStamp then
+					nKeys[id].weekly_best = weekly_best >= nKeys[id].weekly_best and weekly_best or nKeys[id].weekly_best
+					nKeys[id].dungeon_id = dungeonID
+					nKeys[id].key_level = keyLevel
+					nKeys[id].week = week
+					nKeys[id].time_stamp = timeStamp
 				end
 			else
-				table.insert(AstralKeys, {
+				table.insert(nKeys, {
 					unit = unit,
 					btag = btag,
 					class = class,
@@ -147,7 +147,7 @@ local function SyncReceive(entry, sender)
 					weekly_best = weekly_best,
 					source = 'guild'
 				})
-				e.SetUnitID(unit, #AstralKeys)
+				e.SetUnitID(unit, #nKeys)
 			end
 			e.AddUnitToList(unit, 'GUILD')
 			e.AddUnitToSortTable(unit, btag, class, e.FACTION, dungeonID, keyLevel, weekly_best, 'GUILD')
@@ -157,27 +157,27 @@ local function SyncReceive(entry, sender)
 	unit, class, dungeonID, keyLevel, weekly_best, week, timeStamp = nil, nil, nil, nil, nil, nil, nil
 	entry = nil
 end
-AstralComs:RegisterPrefix('GUILD', SYNC_VERSION, SyncReceive)
+nComs:RegisterPrefix('GUILD', SYNC_VERSION, SyncReceive)
 
 local function UpdateWeekly(weekly_best, sender)
 	local id = e.UnitID(sender)
 	if id then
-		AstralKeys[id].weekly_best = tonumber(weekly_best)
-		AstralKeys[id].time_stamp = e.WeekTime()
+		nKeys[id].weekly_best = tonumber(weekly_best)
+		nKeys[id].time_stamp = e.WeekTime()
 		e.UpdateFrames()
 	end
 end
-AstralComs:RegisterPrefix('GUILD', 'updateWeekly', UpdateWeekly)
+nComs:RegisterPrefix('GUILD', 'updateWeekly', UpdateWeekly)
 
 local function PushKeyList(msg, sender)
 	--if sender == e.Player() then return end
 
 	wipe(messageStack)
-	for i = 1, #AstralKeys do
-		if e.UnitInGuild(AstralKeys[i].unit) then -- Only send current guild keys, who wants keys from a different guild?
-			messageStack[#messageStack + 1] = strformat('%s_', strformat('%s:%s:%d:%d:%d:%d:%d', AstralKeys[i].unit, AstralKeys[i].class, AstralKeys[i].dungeon_id, AstralKeys[i].key_level, AstralKeys[i].weekly_best, AstralKeys[i].week, AstralKeys[i].time_stamp))
-			--messageStack[#messageStack + 1] = strformat('%s_', strformat('%s:%s:%d:%d:%d:%d:%d', AstralKeys[i][1], AstralKeys[i][2], AstralKeys[i][3], AstralKeys[i][4], AstralKeys[i][5], AstralKeys[i][6], AstralKeys[i][7]))
-			--messageStack[#messageStack + 1] = strformat('%s_', table.concat(AstralKeys[i], ':'))
+	for i = 1, #nKeys do
+		if e.UnitInGuild(nKeys[i].unit) then -- Only send current guild keys, who wants keys from a different guild?
+			messageStack[#messageStack + 1] = strformat('%s_', strformat('%s:%s:%d:%d:%d:%d:%d', nKeys[i].unit, nKeys[i].class, nKeys[i].dungeon_id, nKeys[i].key_level, nKeys[i].weekly_best, nKeys[i].week, nKeys[i].time_stamp))
+			--messageStack[#messageStack + 1] = strformat('%s_', strformat('%s:%s:%d:%d:%d:%d:%d', nKeys[i][1], nKeys[i][2], nKeys[i][3], nKeys[i][4], nKeys[i][5], nKeys[i][6], nKeys[i][7]))
+			--messageStack[#messageStack + 1] = strformat('%s_', table.concat(nKeys[i], ':'))
 		end
 	end
  
@@ -187,13 +187,13 @@ local function PushKeyList(msg, sender)
 		if msg:len() < 235 then -- Keep the message length less than 255 or player will disconnect
 			table.remove(messageStack, 1)
 		else
-			AstralComs:NewMessage('AstralKeys', strformat('%s %s', SYNC_VERSION, msg), 'GUILD')
+			nComs:NewMessage('nKeys', strformat('%s %s', SYNC_VERSION, msg), 'GUILD')
 			msg = ''
 		end
 	end
 end
 
-AstralComs:RegisterPrefix('GUILD', 'request', PushKeyList)
+nComs:RegisterPrefix('GUILD', 'request', PushKeyList)
 
 -- Guild sorting/Filtering
 local function GuildListSort(A, v)	
@@ -201,12 +201,12 @@ local function GuildListSort(A, v)
 		table.sort(A, function(a, b)
 			local aOnline = e.GuildMemberOnline(a.character_name) and 1 or 0
 			local bOnline = e.GuildMemberOnline(b.character_name) and 1 or 0
-			if not AstralKeysSettings.frame.mingle_offline.isEnabled then
+			if not nKeysSettings.frame.mingle_offline.isEnabled then
 				aOnline = true
 				bOnline = true
 			end
 			if aOnline == bOnline then
-				if AstralKeysSettings.frame.orientation == 0 then
+				if nKeysSettings.frame.orientation == 0 then
 					if e.GetMapName(a.dungeon_id) > e.GetMapName(b.dungeon_id) then
 						if bOnline then
 							return true
@@ -247,12 +247,12 @@ local function GuildListSort(A, v)
 		table.sort(A, function(a, b)
 			local aOnline = e.GuildMemberOnline(a.character_name) and 1 or 0
 			local bOnline = e.GuildMemberOnline(b.character_name) and 1 or 0
-			if not AstralKeysSettings.frame.mingle_offline.isEnabled then
+			if not nKeysSettings.frame.mingle_offline.isEnabled then
 				aOnline = true
 				bOnline = true
 			end
 			if aOnline == bOnline then
-				if AstralKeysSettings.frame.orientation == 0 then
+				if nKeysSettings.frame.orientation == 0 then
 					if a[v] > b[v] then
 						return true
 					elseif a[v] < b[v] then
@@ -296,13 +296,13 @@ local function GuildListFilter(A, filters)
 
 	for i = 1, #A do
 		if e.UnitInGuild(A[i].character_name) then
-			if AstralKeysSettings.frame.show_offline.isEnabled then
+			if nKeysSettings.frame.show_offline.isEnabled then
 				A[i].isShown = true
 			else
 				A[i].isShown = e.GuildMemberOnline(A[i].character_name)
 			end
 
-			A[i].isShown = A[i].isShown and AstralKeysSettings.frame.rank_filter[e.GuildMemberRank(A[i].character_name)]
+			A[i].isShown = A[i].isShown and nKeysSettings.frame.rank_filter[e.GuildMemberRank(A[i].character_name)]
 
 			local isShownInFilter = true  -- Assume there is no filter taking place
 			

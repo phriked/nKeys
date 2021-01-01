@@ -44,8 +44,8 @@ function e.DataResetTime()
 	return time
 end
 
-if not AstralKeysSettings then
-	AstralKeysSettings = {}
+if not nKeysSettings then
+	nKeysSettings = {}
 end
 
 function e:AddDefaultSettings(category, name, data)
@@ -56,17 +56,17 @@ function e:AddDefaultSettings(category, name, data)
 		error('AddDefaultSettings(data, name, data) data expected, received ' .. type(data))
 	end
 
-	if not AstralKeysSettings[category] then
-		AstralKeysSettings[category] = {}
+	if not nKeysSettings[category] then
+		nKeysSettings[category] = {}
 	end
 
-	if AstralKeysSettings[category][name] == nil then
-		AstralKeysSettings[category][name] = data
+	if nKeysSettings[category][name] == nil then
+		nKeysSettings[category][name] = data
 	else
 		if type(data) == 'table' then
 			for newKey, newValue in pairs(data) do
 				local found = false
-				for oldKey in pairs(AstralKeysSettings[category][name]) do
+				for oldKey in pairs(nKeysSettings[category][name]) do
 					if oldKey == newKey then
 						found = true
 						break
@@ -74,7 +74,7 @@ function e:AddDefaultSettings(category, name, data)
 				end
 
 				if not found then
-					AstralKeysSettings[category][name][newKey] = newValue
+					nKeysSettings[category][name][newKey] = newValue
 				end
 			end
 		end
@@ -83,14 +83,14 @@ end
 
 local function LoadDefaultSettings(addon)
 	if addon ~= ADDON_NAME then return end
-	if not AstralKeysSettings.new_settings_config then
-		wipe(AstralKeysSettings)
-		AstralKeysSettings.new_settings_config = true
+	if not nKeysSettings.new_settings_config then
+		wipe(nKeysSettings)
+		nKeysSettings.new_settings_config = true
 	end
 
-	e.CLIENT_VERSION = GetAddOnMetadata('AstralKeys', 'Version')
+	e.CLIENT_VERSION = GetAddOnMetadata('nKeys', 'Version')
 	e:SetUIScale()
-	_G['AstralEngine'] = e
+	_G['nEngine'] = e
 
 	-- General options
 	e:AddDefaultSettings('general', 'init_time', e.DataResetTime())
@@ -152,15 +152,15 @@ local function LoadDefaultSettings(addon)
 	e:AddDefaultSettings('friendOptions', 'show_other_faction', {
 		isEnabled = true,
 	})
-	AstralEvents:Unregister('ADDON_LOADED', 'LoadDefaultSettings')
+	nEvents:Unregister('ADDON_LOADED', 'LoadDefaultSettings')
 end
 
-AstralEvents:Register('ADDON_LOADED', LoadDefaultSettings, 'LoadDefaultSettings')
+nEvents:Register('ADDON_LOADED', LoadDefaultSettings, 'LoadDefaultSettings')
 
 function e.FrameListShown()
-	return AstralKeysSettings.frame.current_list
+	return nKeysSettings.frame.current_list
 end
 
 function e.SetFrameListShown(listName)
-	AstralKeysSettings.frame.current_list = listName
+	nKeysSettings.frame.current_list = listName
 end

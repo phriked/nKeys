@@ -1,7 +1,7 @@
 local e, L = unpack(select(2, ...))
 
-if not AstralLists then
-	AstralLists = {}
+if not nLists then
+	nLists = {}
 end
 
 -- Names saved that can't be used for another list
@@ -12,8 +12,8 @@ SAVED_NAMES[L['FRIENDS']] = true
 local function DoesListExist(listName)
 	if not listName then return end
 
-	for i = 1, #AstralLists do
-		if AstralLists[i].name == listName then
+	for i = 1, #nLists do
+		if nLists[i].name == listName then
 			return true, i
 		end
 	end
@@ -27,7 +27,7 @@ end
 -- @return boolean Returns true if the list was created, false otherwise
 function e.CreateNewList(listName)
 	if not listName then
-		error('Astral Keys: CreateNewList(listName) listName expected, received ' .. type(listName))
+		error('n Keys: CreateNewList(listName) listName expected, received ' .. type(listName))
 	end
 
 	if DoesListExist(listName) then
@@ -38,19 +38,19 @@ function e.CreateNewList(listName)
 	tbl['name'] = listName
 	tbl['units'] = {}
 
-	table.insert(AstralLists, tbl)
+	table.insert(nLists, tbl)
 
 	return true
 end
 
 function e.DeleteList(targetListName)
 	if not targetListName or type(targetListName) ~= 'string' then
-		error('AstralKeys DeleteList(targetListName) targetListName expected, received ' .. type(targetListName))
+		error('nKeys DeleteList(targetListName) targetListName expected, received ' .. type(targetListName))
 	end
 
-	for i = 1, #AstralLists do
-		if AstralLists[i].name == targetListName then
-			table.remove(AstralLists, i)
+	for i = 1, #nLists do
+		if nLists[i].name == targetListName then
+			table.remove(nLists, i)
 			break
 		end
 	end
@@ -58,11 +58,11 @@ end
 
 function e.DoesListExist(list)
 	if not list or type(list) ~= 'string' then
-		error('AstralKeys DoesListExist(list) String expected, recieved ' .. type(list))
+		error('nKeys DoesListExist(list) String expected, recieved ' .. type(list))
 	end
 
-	for i = 1, #AstralLists do
-		if AstralLists[i].name == list then
+	for i = 1, #nLists do
+		if nLists[i].name == list then
 			return true
 		end
 	end
@@ -72,15 +72,15 @@ end
 
 function e.GetListCount(list)
 	if not list or type(list) ~= 'string' then
-		error('AstralKeys GetListCount(list) String expected, received ' .. type(list))
+		error('nKeys GetListCount(list) String expected, received ' .. type(list))
 	end
 
 	local count = 0
 
 	if e.DoesListExist(list) then
-		for i = 1, #AstralLists do
-			if AstralLists[i].name == list then
-				for unit in pairs(AstralLists[i].units) do
+		for i = 1, #nLists do
+			if nLists[i].name == list then
+				for unit in pairs(nLists[i].units) do
 					count = count + 1
 				end
 			end
@@ -92,19 +92,19 @@ end
 
 function e.AddUnitToList(unit, listName, btag)
 	if not listName then
-		error('Astral Keys: AddUnitToList(unit, btag, listName) listName expected, received ' .. type(listName))
+		error('n Keys: AddUnitToList(unit, btag, listName) listName expected, received ' .. type(listName))
 	end
 	if not unit then
-		error('Astral Keys: AddUnitToList(unit, btag, listName) unit expected, received ' .. type(unit))
+		error('n Keys: AddUnitToList(unit, btag, listName) unit expected, received ' .. type(unit))
 	end
 
 	local unitID = e.UnitID(unit)
 
 	btag = e.UnitBTag(unitID)
 
-	for i = 1, #AstralLists do
-		if AstralLists[i].name == listName then
-			AstralLists[i].units[unit] = btag or true
+	for i = 1, #nLists do
+		if nLists[i].name == listName then
+			nLists[i].units[unit] = btag or true
 			return true
 		end
 	end
@@ -114,15 +114,15 @@ end
 
 function e.RemoveUnitFromList(unit, listName)
 	if not listName then
-		error('Astral Keys: RemoveUnitFromList(unit, btag, listName) listName expected, received ' .. type(listName))
+		error('n Keys: RemoveUnitFromList(unit, btag, listName) listName expected, received ' .. type(listName))
 	end
 	if not unit then
-		error('Astral Keys: RemoveUnitFromList(unit, btag, unit) unit expected, received ' .. type(unit))
+		error('n Keys: RemoveUnitFromList(unit, btag, unit) unit expected, received ' .. type(unit))
 	end
 
-	for i = 1, #AstralLists do
-		if AstralLists[i].name == listName then
-			AstralLists[i].units[unit] = nil
+	for i = 1, #nLists do
+		if nLists[i].name == listName then
+			nLists[i].units[unit] = nil
 			break
 		end
 	end
@@ -131,28 +131,28 @@ end
 local function GetListUnits(listName)
 	if not listName then return end
 
-	for i = 1, #AstralLists do
-		if AstralLists[i].name == listName then
-			return AstralLists[i].units
+	for i = 1, #nLists do
+		if nLists[i].name == listName then
+			return nLists[i].units
 		end
 	end
 end
 
 function e.DoesUnitBelongToList(unitName, listName)
 	if not unitName then
-		error('AstralKeys: DoesUnitBelongToList(unitName, listName) unitName expected, received ' .. type(unitName))
+		error('nKeys: DoesUnitBelongToList(unitName, listName) unitName expected, received ' .. type(unitName))
 	end
 	if not listName then
-		error('AstralKeys: DoesUnitBelongToList(unitName, listName) listName expected, received ' .. type(listName))
+		error('nKeys: DoesUnitBelongToList(unitName, listName) listName expected, received ' .. type(listName))
 	end
 
 	if not DoesListExist(listName) then
 		return false
 	end
 
-	for list = 1, #AstralLists do
-		if AstralLists[list].name == listName then
-			if AstralLists[list].units[unitName] then
+	for list = 1, #nLists do
+		if nLists[list].name == listName then
+			if nLists[list].units[unitName] then
 				return true
 			end
 		end
@@ -165,8 +165,8 @@ end
 local function GetLists()
 	local tbl = {}
 
-	for i = 1, AstralLists do
-		table.insert(tbl, AstralLists[i].name)
+	for i = 1, nLists do
+		table.insert(tbl, nLists[i].name)
 	end
 
 	return tbl

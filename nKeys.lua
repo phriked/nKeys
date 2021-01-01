@@ -2,8 +2,8 @@ local e, L = unpack(select(2, ...))
 e.Week = 0
 e.EXPANSION_LEVEL = 60
 
-if not AstralKeys then AstralKeys = {} end
-if not AstralCharacters then AstralCharacters = {} end
+if not nKeys then nKeys = {} end
+if not nCharacters then nCharacters = {} end
 
 local initializeTime = {} 
 initializeTime[1] = 1500390000 -- US Tuesday at reset
@@ -21,14 +21,14 @@ function e.WeekTime()
 	end
 end
 
-AstralEvents:Register('PLAYER_LOGIN', function()
+nEvents:Register('PLAYER_LOGIN', function()
 
-	local major, minor = string.match(GetAddOnMetadata('AstralKeys', 'version'), '(%d+).(%d+)')
+	local major, minor = string.match(GetAddOnMetadata('nKeys', 'version'), '(%d+).(%d+)')
 
-	if tonumber(major) == 3 and tonumber(minor) > 25 and not AstralKeysSettings.wipedOldTables then -- Changed to single table in 3.26
-		wipe(AstralKeys)
-		AstralFriends = nil
-		AstralKeysSettings.wipedOldTables = true
+	if tonumber(major) == 3 and tonumber(minor) > 25 and not nKeysSettings.wipedOldTables then -- Changed to single table in 3.26
+		wipe(nKeys)
+		nFriends = nil
+		nKeysSettings.wipedOldTables = true
 	end
 
 	if IsInGuild() then
@@ -55,10 +55,10 @@ AstralEvents:Register('PLAYER_LOGIN', function()
 	e.SetPlayerNameRealm()
 	e.SetPlayerClass()
 
-	if currentTime > AstralKeysSettings.general.init_time then
-		wipe(AstralCharacters)
-		wipe(AstralKeys)
-		AstralKeysSettings.general.init_time = e.DataResetTime()
+	if currentTime > nKeysSettings.general.init_time then
+		wipe(nCharacters)
+		wipe(nKeys)
+		nKeysSettings.general.init_time = e.DataResetTime()
 	end
 
 	if d.wday == 3 and d.hour < (16 + hourOffset + (d.isdst and 1 or 0)) and region ~= 3 then
@@ -75,14 +75,14 @@ AstralEvents:Register('PLAYER_LOGIN', function()
 					self.first = false
 				end
 
-				if time(date('*t', GetServerTime())) > AstralKeysSettings.general.init_time then					
+				if time(date('*t', GetServerTime())) > nKeysSettings.general.init_time then					
 					e.WipeCharacterList()
 					e.WipeUnitList()
 					e.WipeFriendList()
 					C_MythicPlus.RequestRewards()
-					AstralCharacters = {}
-					AstralKeys = {}
-					AstralKeysSettings.general.init_time = e.DataResetTime()
+					nCharacters = {}
+					nKeys = {}
+					nKeysSettings.general.init_time = e.DataResetTime()
 					e.Week = math.floor((GetServerTime() - initializeTime[1]) / 604800)
 					e.FindKeyStone(true, false)
 					e.UpdateAffixes()
@@ -107,14 +107,14 @@ AstralEvents:Register('PLAYER_LOGIN', function()
 					self.first = false
 				end
 
-				if time(date('*t', GetServerTime())) > AstralKeysSettings.general.init_time then
+				if time(date('*t', GetServerTime())) > nKeysSettings.general.init_time then
 					e.WipeCharacterList()
 					e.WipeUnitList()
 					e.WipeFriendList()
 					C_MythicPlus.RequestRewards()
-					AstralCharacters = {}
-					AstralKeys = {}
-					AstralKeysSettings.general.init_time = e.DataResetTime()
+					nCharacters = {}
+					nKeys = {}
+					nKeysSettings.general.init_time = e.DataResetTime()
 					e.FindKeyStone(true, false)
 					e.Week = math.floor((GetServerTime() - initializeTime[2]) / 604800)
 					e.UpdateAffixes()
@@ -130,35 +130,35 @@ AstralEvents:Register('PLAYER_LOGIN', function()
 	-- Check over saved variables, remove any entries that are incorrect
 	-- if any of these fields, remove it
 	-- unit, class, dungeon_id, key_level, faction
-	for i = #AstralKeys, 1, -1 do
-		if not (AstralKeys[i].unit and AstralKeys[i].class and AstralKeys[i].dungeon_id and AstralKeys[i].key_level) then -- Missing information from an entry, remove the entry
-			table.remove(AstralKeys, i)
+	for i = #nKeys, 1, -1 do
+		if not (nKeys[i].unit and nKeys[i].class and nKeys[i].dungeon_id and nKeys[i].key_level) then -- Missing information from an entry, remove the entry
+			table.remove(nKeys, i)
 		end
 	end
 
 	-- Clean up any bad information for personal characters
-	for i = #AstralCharacters, 1, -1 do
-		if not (AstralCharacters[i].unit) then
-			table.remove(AstralCharacters, i)
+	for i = #nCharacters, 1, -1 do
+		if not (nCharacters[i].unit) then
+			table.remove(nCharacters, i)
 		end
 	end
 
-	for i = 1, #AstralKeys do -- index guild units
-		if AstralKeys[i] and AstralKeys[i].unit then
-			e.SetUnitID(AstralKeys[i].unit, i)
-			e.AddUnitToSortTable(AstralKeys[i].unit, AstralKeys[i].btag, AstralKeys[i].class, AstralKeys[i].faction, AstralKeys[i].dungeon_id, AstralKeys[i].key_level, AstralKeys[i].weekly_best)
-			--e.AddUnitToTable(AstralKeys[i].unit, AstralKeys[i].class, AstralKeys[i].faction, 'GUILD', AstralKeys[i].dungeon_id, AstralKeys[i].key_level, AstralKeys[i].weekly_best)
+	for i = 1, #nKeys do -- index guild units
+		if nKeys[i] and nKeys[i].unit then
+			e.SetUnitID(nKeys[i].unit, i)
+			e.AddUnitToSortTable(nKeys[i].unit, nKeys[i].btag, nKeys[i].class, nKeys[i].faction, nKeys[i].dungeon_id, nKeys[i].key_level, nKeys[i].weekly_best)
+			--e.AddUnitToTable(nKeys[i].unit, nKeys[i].class, nKeys[i].faction, 'GUILD', nKeys[i].dungeon_id, nKeys[i].key_level, nKeys[i].weekly_best)
 		end
 	end
 
-	for i = 1, #AstralCharacters do -- index player's characters
-		if AstralCharacters[i] and AstralCharacters[i].unit then
-			e.SetCharacterID(AstralCharacters[i].unit, i)
+	for i = 1, #nCharacters do -- index player's characters
+		if nCharacters[i] and nCharacters[i].unit then
+			e.SetCharacterID(nCharacters[i].unit, i)
 		end
 	end	
 	
-	if AstralAffixes.season_start_week == 0 then -- Addon has just initialized for the fisrt time or saved variables have been lost. 
-		AstralAffixes.season_start_week = e.Week
+	if nAffixes.season_start_week == 0 then -- Addon has just initialized for the fisrt time or saved variables have been lost. 
+		nAffixes.season_start_week = e.Week
 	end
 	C_MythicPlus.RequestMapInfo() -- Gets info on affixes and current season...
 	C_MythicPlus.RequestCurrentAffixes() -- Who knows what this actually does...

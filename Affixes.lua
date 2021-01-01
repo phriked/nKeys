@@ -1,10 +1,10 @@
 local e, L = unpack(select(2, ...))
 
-if not AstralAffixes then
-	AstralAffixes = {}
-	AstralAffixes.rotation = {}
-	AstralAffixes.season_start_week = 0
-	AstralAffixes.season_affix = 0
+if not nAffixes then
+	nAffixes = {}
+	nAffixes.rotation = {}
+	nAffixes.season_start_week = 0
+	nAffixes.season_affix = 0
 end
 
 --[[
@@ -65,7 +65,7 @@ local AffixOneID, AffixTwoID, AffixThreeID = 0, 0, 0 -- Used to always show the 
 -- @param affixString string String representation of affixes, single digits are padded with leading 0's. ex. 100612 would be 10, 06, 12
 -- @return Boolean False by default, true the affixes are found within the db
 local function AreAffixesAlreadyStored(affixString)
-	local rotation = AstralAffixes.rotation
+	local rotation = nAffixes.rotation
 	local rotationString
 
 	for i = 1, #rotation do
@@ -112,10 +112,10 @@ local function UpdateMythicPlusAffixes()
 
 	ROTATION_WEEK_POSITION = GetRotationPosition(affixes[1].id, affixes[2].id, affixes[3].id)
 
-	if SEASON_AFFIX ~= AstralAffixes.season_affix then -- Season has changed
-		AstralAffixes.rotation = {} -- Wipe the table
-		AstralAffixes.season_affix = SEASON_AFFIX -- Change the season affix
-		AstralAffixes.season_start_week = e.Week -- Set the starting week
+	if SEASON_AFFIX ~= nAffixes.season_affix then -- Season has changed
+		nAffixes.rotation = {} -- Wipe the table
+		nAffixes.season_affix = SEASON_AFFIX -- Change the season affix
+		nAffixes.season_start_week = e.Week -- Set the starting week
 	end
 
 	-- Store the affix info for all the affixes, name, description
@@ -130,11 +130,11 @@ local function UpdateMythicPlusAffixes()
 	local name, desc = C_ChallengeMode.GetAffixInfo(SEASON_AFFIX)
 	AFFIX_INFO[SEASON_AFFIX] = {name = name, description = desc}
 	
-	AstralEvents:Unregister('CHALLENGE_MODE_MAPS_UPDATE', 'updateAffixes')
-	AstralEvents:Unregister('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE', 'updateAffixes')
+	nEvents:Unregister('CHALLENGE_MODE_MAPS_UPDATE', 'updateAffixes')
+	nEvents:Unregister('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE', 'updateAffixes')
 end
-AstralEvents:Register('CHALLENGE_MODE_MAPS_UPDATE', UpdateMythicPlusAffixes, 'updateAffixes')
-AstralEvents:Register('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE', UpdateMythicPlusAffixes, 'UpdateAffixes')
+nEvents:Register('CHALLENGE_MODE_MAPS_UPDATE', UpdateMythicPlusAffixes, 'updateAffixes')
+nEvents:Register('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE', UpdateMythicPlusAffixes, 'UpdateAffixes')
 
 function e.AffixOne(weekOffSet)
 	local offSet = weekOffSet or 0

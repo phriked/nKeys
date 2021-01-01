@@ -1,7 +1,7 @@
 <Ui xmlns='http://www.blizzard.com/wow/ui/'>
 	<FontFamily name="InterUIBold_Tiny" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Bold.ttf" height="8">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Bold.ttf" height="8">
 				<Color r="1" g="1" b="1" a="1"/>					
 			</Font>
 		</Member>
@@ -31,7 +31,7 @@
 	<!--Not used yet-->
 	<FontFamily name="InterUIBold_Small" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Bold.ttf" height="10">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Bold.ttf" height="10">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -59,7 +59,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIBold_Normal" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Bold.ttf" height="12" justifyH="LEFT">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Bold.ttf" height="12" justifyH="LEFT">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -87,7 +87,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIBold_Large" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Bold.ttf" height="16" justifyH="LEFT">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Bold.ttf" height="16" justifyH="LEFT">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -115,7 +115,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIBold_ExtraLarge" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Bold.ttf" height="18" justifyH="LEFT">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Bold.ttf" height="18" justifyH="LEFT">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -143,7 +143,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIBlack_Tiny" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Black.ttf" height="8">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Black.ttf" height="8">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -171,7 +171,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIBlack_Small" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Black.ttf" height="10">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Black.ttf" height="10">
 				<Shadow>
 					<Offset>
 						<AbsDimension x="1" y="-1"/>
@@ -205,7 +205,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIBlack_Normal" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Black.ttf" height="12" justifyH="LEFT">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Black.ttf" height="12" justifyH="LEFT">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -233,7 +233,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIBlack_Large" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Black.ttf" height="14">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Black.ttf" height="14">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -261,7 +261,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIBlack_ExtraLarge" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Black.ttf" height="20">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Black.ttf" height="20">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -289,7 +289,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIRegular_Tiny" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Regular.ttf" height="8">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Regular.ttf" height="8">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -317,7 +317,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIRegular_Small" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Regular.ttf" height="10">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Regular.ttf" height="10">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -345,7 +345,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIRegular_Normal" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Regular.ttf" height="12">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Regular.ttf" height="12">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -373,7 +373,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIMedium_Normal" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Medium.ttf" height="12" justifyH="LEFT">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Medium.ttf" height="12" justifyH="LEFT">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -401,7 +401,7 @@
 	</FontFamily>
 	<FontFamily name="InterUIMedium_Large" virtual="true">
 		<Member alphabet="roman">
-			<Font font="Interface\AddOns\AstralKeys\Media\Font\Inter-UI-Medium.ttf" height="14">
+			<Font font="Interface\AddOns\nKeys\Media\Font\Inter-UI-Medium.ttf" height="14">
 			</Font>
 		</Member>
 		<Member alphabet="korean">
@@ -427,7 +427,7 @@
 			</Font>
 		</Member>
 	</FontFamily>
-	<FontFamily name="AstralFont_Large" virtual="true">
+	<FontFamily name="nFont_Large" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Fonts\FRIZQT__.TTF" height="12">
 			</Font>
@@ -457,20 +457,20 @@
 	</FontFamily>
 
 
-	<Font name="AstralFontVersion" inherits="InterUIRegular_Normal" justifyH="LEFT" virtual="true">
+	<Font name="nFontVersion" inherits="InterUIRegular_Normal" justifyH="LEFT" virtual="true">
 		<Color r="1" g="1" b="1" a="1"/>
 	</Font>
 
-	<Font name="AstralFontNormal" inherits="GameFontNormal" justifyH="LEFT" virtual="true">
+	<Font name="nFontNormal" inherits="GameFontNormal" justifyH="LEFT" virtual="true">
 		<Color r="1" g="1" b="1" a="1"/>
 	</Font>
-	<Font name="AstralFontLarge" inherits="AstralFont_Large" justifyH="LEFT" virtual="true">
+	<Font name="nFontLarge" inherits="nFont_Large" justifyH="LEFT" virtual="true">
 		<Color r="1" g="1" b="1" a="1"/>
 	</Font>
-	<Font name="AstralFontNormalCenter" inherits="GameFontNormal" justifyH="CENTER" virtual="true">
+	<Font name="nFontNormalCenter" inherits="GameFontNormal" justifyH="CENTER" virtual="true">
 		<Color r="1" g="1" b="1" a="1"/>
 	</Font>
-	<Font name="AstralFontLargeCenter" inherits="AstralFont_Large" justifyH="CENTER" virtual="true">
+	<Font name="nFontLargeCenter" inherits="nFont_Large" justifyH="CENTER" virtual="true">
 		<Color r="1" g="1" b="1" a="1"/>
 	</Font>
 </Ui>

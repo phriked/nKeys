@@ -1,5 +1,5 @@
-# AstralKeys
-Astral Keys is a Mythic+ keystone aggregator for World of Warcraft.
+# nKeys
+n Keys is a Mythic+ keystone aggregator for World of Warcraft.
 The main features are:
 * Automatic syncing of guild member's keys
 * Automatic announcement of player's key to party chat when acquiring a new key

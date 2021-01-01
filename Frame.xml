@@ -7,7 +7,7 @@
 Character Frame Template
 ********************************************************************************
 -->
-	<Button name="AstralCharacterFrameTemplate" virtual="true" mixin="AstralKeysCharacterMixin">
+	<Button name="nCharacterFrameTemplate" virtual="true" mixin="nKeysCharacterMixin">
 		<Size>
 			<AbsDimension x="180" y="50"/>
 		</Size>
@@ -55,7 +55,7 @@ Character Frame Template
 			<OnLoad method="OnLoad"/>
 		</Scripts>
 	</Button>
-	<Button name="AstralListFrameTemplate" virtual="true" mixin="AstralKeysListMixin">
+	<Button name="nListFrameTemplate" virtual="true" mixin="nKeysListMixin">
 		<!-- with WKYL BST, 440 px -->
 		<Size>
 			<AbsDimension x="400" y="20"/>
