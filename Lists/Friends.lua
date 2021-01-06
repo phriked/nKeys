@@ -122,6 +122,7 @@ local function serverRequestRespond(gameAccountID)
 	end
 
 	nComs:NewMessage('nKeys', 'serverRespond', realm, gameAccountID)
+	nComs:NewMessage('AstralKeys', 'serverRespond', realm, gameAccountID)
 end
 
 local function UpdateNonBNetFriendList()
@@ -325,27 +326,33 @@ function e.PushKeyDataToFriends(data, target)
 			if type(data) == 'table' then
 				for i = 1, #data do
 					nComs:NewMessage('nKeys', strformat('%s %s', SYNC_VERSION, data[i]), 'BNET', gaID)
+					nComs:NewMessage('AstralKeys', strformat('%s %s', SYNC_VERSION, data[i]), 'BNET', gaID)
 				end
 			else
 				nComs:NewMessage('nKeys', strformat('%s %s', UPDATE_VERSION, data), 'BNET', gaID)
+				nComs:NewMessage('AstralKeys', strformat('%s %s', UPDATE_VERSION, data), 'BNET', gaID)
 			end
 		end
 		for player in pairs(NonBNFriend_List) do
 			if type(data) == 'table' then
 				for i = 1, #data do
 					nComs:NewMessage('nKeys', strformat('%s %s', SYNC_VERSION, data[i]), 'WHISPER', player)
+					nComs:NewMessage('AstralKeys', strformat('%s %s', SYNC_VERSION, data[i]), 'WHISPER', player)
 				end
 			else
 				nComs:NewMessage('nKeys', strformat('%s %s', UPDATE_VERSION, data), 'WHISPER', player)
+				nComs:NewMessage('AstralKeys', strformat('%s %s', UPDATE_VERSION, data), 'WHISPER', player)
 			end
 		end
 	else
 		if type(data) == 'table' then
 			for i = 1, #data do
 				nComs:NewMessage('nKeys', strformat('%s %s', SYNC_VERSION, data[i]), tonumber(target) and 'BNET' or 'WHISPER', target)
+				nComs:NewMessage('AstralKeys', strformat('%s %s', SYNC_VERSION, data[i]), tonumber(target) and 'BNET' or 'WHISPER', target)
 			end
 		else
 			nComs:NewMessage('nKeys',  strformat('%s %s', UPDATE_VERSION, data), tonumber(target) and 'BNET' or 'WHISPER', target)
+			nComs:NewMessage('AstralKeys',  strformat('%s %s', UPDATE_VERSION, data), tonumber(target) and 'BNET' or 'WHISPER', target)
 		end
 	end
 end
@@ -367,10 +374,12 @@ local function PingFriendsFornKeys()
 
 	for gaID in pairs(BNFriendList) do
 		nComs:NewMessage('nKeys', 'BNet_query ping', 'BNET', gaID)
+		nComs:NewMessage('AstralKeys', 'BNet_query ping', 'BNET', gaID)
 	end
 
 	for player in pairs(NonBNFriend_List) do
 		nComs:NewMessage('nKeys', 'BNet_query ping', 'WHISPER', player)
+		nComs:NewMessage('AstralKeys', 'BNet_query ping', 'WHISPER', player)
 	end
 
 	nEvents:Unregister('FRIENDLIST_UPDATE', 'pingFriends')
@@ -380,6 +389,7 @@ end
 local function PingResponse(msg, sender)
 	if msg:find('ping') then
 		nComs:NewMessage('nKeys', 'BNet_query response', type(sender) == 'number' and 'BNET' or 'WHISPER', sender)
+		nComs:NewMessage('AstralKeys', 'BNet_query response', type(sender) == 'number' and 'BNET' or 'WHISPER', sender)
 	end
 	PushKeysToFriends(sender)
 end

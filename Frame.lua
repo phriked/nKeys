@@ -482,11 +482,7 @@ local logo_n = CreateFrame('BUTTON', nil, menuBar)
 logo_n:SetSize(32, 32)
 logo_n:SetPoint('BOTTOMLEFT', menuBar, 'BOTTOMLEFT', 10, 10)
 logo_n:SetAlpha(0.8)
-logo_n:SetNormalTexture('Interface\\AddOns\\nKeys\\Media\\Texture\\nKeyslogo.')
-
-logo_n:SetScript('OnClick', function()
-	nGuildInfo:SetShown(not nGuildInfo:IsShown())
-	end)
+logo_n:SetNormalTexture('Interface\\AddOns\\nKeys\\Media\\Texture\\nKeyslogo.tga')
 
 logo_n:SetScript('OnEnter', function(self)
 	self:SetAlpha(1)

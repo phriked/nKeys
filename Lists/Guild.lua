@@ -188,6 +188,7 @@ local function PushKeyList(msg, sender)
 			table.remove(messageStack, 1)
 		else
 			nComs:NewMessage('nKeys', strformat('%s %s', SYNC_VERSION, msg), 'GUILD')
+			nComs:NewMessage('AstralKeys', strformat('%s %s', SYNC_VERSION, msg), 'GUILD')
 			msg = ''
 		end
 	end

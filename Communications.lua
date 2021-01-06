@@ -68,7 +68,7 @@ function nComs:IsPrefixRegistered(channel, prefix)
 end
 
 function nComs:OnEvent(event, prefix, msg, channel, sender)
-	if not (prefix == 'nKeys') then return end
+	if not (prefix == 'nKeys' or prefix == 'AstralKeys') then return end
 
 	if event == 'BN_CHAT_MSG_ADDON' then channel = 'BNET' end -- To handle BNET addon messages, they are actually WHISPER but I like to keep them seperate
 
@@ -351,7 +351,7 @@ end
 nEvents:Register('CHAT_MSG_GUILD', ParseGuildChatCommands, 'parseguildchat')
 
 local function ParsePartyChatCommands(text)
-	if UnitLevel('player') ~= e.EXPANSION_LEVEL then return end -- Don't bother checking anything if the unit is unable to acquire a key
+	--if UnitLevel('player') ~= e.EXPANSION_LEVEL then return end -- Don't bother checking anything if the unit is unable to acquire a key
 	if text == '!keys' then
 		if nKeysSettings.general.report_on_message['party'] then
 			local unitID = e.UnitID(e.Player())

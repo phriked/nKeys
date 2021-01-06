@@ -47,7 +47,7 @@ divider:SetPoint('TOP', logo_Key, 'BOTTOM', 0, -20)
 local logo_n = menuBar:CreateTexture(nil, 'ARTWORK')
 logo_n:SetAlpha(0.8)
 logo_n:SetSize(32, 32)
-logo_n:SetTexture('Interface\\AddOns\\nKeys\\Media\\Texture\\Logo@2x')
+logo_n:SetTexture('Interface\\AddOns\\nKeys\\Media\\Texture\\nKeyslogo.tga')
 logo_n:SetPoint('BOTTOMLEFT', menuBar, 'BOTTOMLEFT', 10, 10)
 
 local closeButton = CreateFrame('BUTTON', '$parentCloseButton', nOptionsFrame)

@@ -18,6 +18,7 @@ local function UpdateWeekly()
 	local characterWeeklyBest = e.GetCharacterBestLevel(characterID)
 	if IsInGuild() then
 		nComs:NewMessage('nKeys', 'updateWeekly ' .. characterWeeklyBest, 'GUILD')
+		nComs:NewMessage('AstralKeys', 'updateWeekly ' .. characterWeeklyBest, 'GUILD')
 	else
 		local id = e.UnitID(e.Player())
 		if id then
@@ -39,10 +40,12 @@ local function InitData()
 	end
 	nEvents:Unregister('CHALLENGE_MODE_MAPS_UPDATE', 'initData')
 	C_ChatInfo.RegisterAddonMessagePrefix('nKeys')
+	C_ChatInfo.RegisterAddonMessagePrefix('AstralKeys')
 	e.FindKeyStone(true, false)
 	e.UpdateCharacterBest() 	
 	if IsInGuild() then
 		nComs:NewMessage('nKeys', 'request', 'GUILD')
+		nComs:NewMessage('AstralKeys', 'request', 'GUILD')
 	end
 
 	if UnitLevel('player') < e.EXPANSION_LEVEL then return end
@@ -124,6 +127,7 @@ function e.FindKeyStone(sendUpdate, anounceKey)
 		e.PushKeyDataToFriends(msg)
 		if IsInGuild() then
 			nComs:NewMessage('nKeys', strformat('%s %s', e.UPDATE_VERSION, msg), 'GUILD')
+			nComs:NewMessage('AstralKeys', strformat('%s %s', e.UPDATE_VERSION, msg), 'GUILD') -- Astral Keys temp integration
 		else -- Not in a guild, who are you people? Whatever, gotta make it work for them as well
 			local id = e.UnitID(e.Player())
 			if id then -- Are we in the DB already?
